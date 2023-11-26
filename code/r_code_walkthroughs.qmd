@@ -50,12 +50,14 @@ json_df <- jsonlite::fromJSON(jsonlite::toJSON(response_json))
 
 ```{r}
 #| echo: true
-## Extract the third element from each list element using  sapply
+## Extract the third element from each list element using sapply
 sapply(httr2::resp_body_json(response), function(x) x[3])
 
 ## Extract the third element from each list element using purrr
 purrr::map_chr(httr2::resp_body_json(response), ~ .[[3]])
 ```
+
+Note: always the possibility to examine the expected url in a webbrowser. 
 
 # Cytoscape
 
