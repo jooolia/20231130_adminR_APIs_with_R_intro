@@ -30,12 +30,12 @@ This repository contains the code and presentation slides for the "API Talk with
 
 2. **Code Examples:** Explore the "code" directory for R code examples demonstrated during the talk. These examples illustrate key concepts discussed.
 
-## Running the Code
+## Running the Code 
 
 1. Ensure you have the required R packages installed. You can do this by running:
 
    ```R
-   install.packages(c("httr2", "jsonlite", "your_additional_packages"))
+   install.packages(c("httr2", "jsonlite", "purrr", "devtools"))
    ```
 
 2. Open the R scripts in the "code" directory using your preferred R environment (e.g., RStudio).
