@@ -1,0 +1,224 @@
+---
+title: "APIs in R: demos"
+format: revealjs
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+# Basic example with Github
+
+Can I find anything out about AdminR githup repo?
+
+See all the possibilities here: https://docs.github.com/rest
+
+```{r}
+#| echo: true
+## GitHub API URL for Swiss AdminR organization repositories
+github_url <- "https://api.github.com/orgs/swiss-adminR/repos"
+
+## Make the API request
+response <- httr2::request(github_url) |>
+  httr2::req_perform()
+
+## Check the response status
+httr2::resp_status(response)
+```
+
+## Parsing the content
+
+```{r}
+#| echo: true
+## Parse the content
+httr2::resp_body_json(response)
+httr2::resp_header(response,
+                   "content-type")
+
+str(httr2::resp_body_json(response))
+
+str(httr2::resp_body_json(response),
+    max.level = 2,
+    list.len = 10)
+
+## Convert JSON data to a data frame
+response_json <- httr2::resp_body_json(response)
+json_df <- jsonlite::fromJSON(jsonlite::toJSON(response_json))
+```
+
+## Parsing into a dataframe
+
+
+```{r}
+#| echo: true
+## Extract the third element from each list element using sapply
+sapply(httr2::resp_body_json(response), function(x) x[3])
+
+## Extract the third element from each list element using purrr
+purrr::map_chr(httr2::resp_body_json(response), ~ .[[3]])
+```
+
+Note: always the possibility to examine the expected url in a webbrowser. 
+
+# Cytoscape
+
+Create and manipulate a basic network in Cytoscape using RCy3
+
+```{r, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("cytoscape/RCy3",
+               build_vignettes = FALSE)
+```
+
+```{r}
+#| echo: true
+library(RCy3)
+cytoscapePing()
+cytoscapeVersionInfo()
+
+req <- curl::curl(url = "http://localhost:1234/v1/version")
+jsonlite::prettify(readLines(req))
+```
+
+## Simple network example
+
+```{r}
+#| echo: true
+nodes <- data.frame(id = c("node 0", "node 1", "node 2", "node 3"),
+                    group = c("A", "A", "B", "B"), # categorical strings
+                    score = as.integer(c(20, 10, 15, 5)), # integers
+                    stringsAsFactors = FALSE)
+edges <- data.frame(source = c("node 0", "node 0", "node 0", "node 2"),
+                    target = c("node 1", "node 2", "node 3", "node 3"),
+                    weight = c(5.1, 3.0, 5.2, 9.9), # numeric
+                    stringsAsFactors = FALSE)
+
+createNetworkFromDataFrames(nodes, edges,
+                            title = "my first network",
+                            collection = "DataFrame Example")
+
+layoutNetwork("circular")
+layoutNetwork("cose")
+
+```
+## Les Miserables example
+
+```{r}
+#| echo: true
+lesmis_file <- system.file("extdata",
+                           "lesmis.txt",
+                           package = "RCy3")
+lesmis <- read.table(lesmis_file, header = FALSE, sep = "\t")
+
+lesmis_ig <- igraph::graph.data.frame(lesmis,
+                                      directed = FALSE)
+plot(lesmis_ig)
+
+createNetworkFromIgraph(lesmis_ig, new.title = "Les Miserables")
+
+layoutNetwork("circular")
+layoutNetwork("cose")
+setNodeShapeDefault("OCTAGON")
+setNodeColorDefault("#AAFF88")
+setNodeSizeDefault(60)
+setNodeFontSizeDefault(10)
+```
+
+## Cytoscape API documentation
+There is quite a bit of documentation available. This Swagger documentation is available for many APIs.
+
+```{r}
+#| echo: true
+cyrestAPI()  # CyREST API
+commandsAPI()  # Commands API
+```
+
+# DeepL API
+
+There are many different tools for doing translations. https://www.deepl.com/en/docs-api/
+
+We get an example command for curl. How can we use that in R?
+
+```         
+curl https://api-free.deepl.com/v2/translate -X POST  --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=Hello, world!' --data-urlencode 'target_lang=DE'
+```
+
+Several options:
+
+-   Use the curl command with {curl} or {crul}
+-   Adapt to use with {httr2} (or older {httr})
+-   Also could use system2() to run cURL command in system shell
+
+Here we will look at using the curl command with {httr2}
+
+```{r}
+#| echo: true
+httr2::curl_translate("curl http://example.com")
+
+## can get you started, but not all the way there
+httr2::curl_translate("curl 'https://api-free.deepl.com/v2/translate' -X POST --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=Hello, world! target_lang=DE' ", simplify_headers = FALSE)
+```
+
+We can use that output to get started, but will add our needed query info
+
+
+## Constructing the request
+Can use `httr2::req_dry_run()` instead of `httr2::req_perform()` to test out the request (did not include the example as this prints the Authorization to the screen and doc).
+
+```{r}
+#| echo: true
+response <- httr2::request("https://api-free.deepl.com/v2/translate") |>
+  httr2::req_method("POST") |>
+  httr2::req_headers(Authorization = paste0("DeepL-Auth-Key ",
+                                            Sys.getenv("DEEPL_AUTH"))) |>
+  httr2::req_url_query(text = "Hello, world!") |>
+  httr2::req_url_query(target_lang = "DE") |>
+  httr2::req_perform()
+
+# Check the response status
+httr2::resp_status(response)
+# Parse the content
+httr2::resp_body_json(response)
+
+httr2::resp_header(response, "content-type")
+```
+
+## Reponse of translated text
+
+```{r}
+#| echo: true
+# Extract and display the translated text
+translated_text <- httr2::resp_body_json(response)$translations[[1]]$text
+translated_text
+```
+
+## Do language detection
+
+
+```{r}
+#| echo: true
+# Modify the request to include language detection
+# Language detection request
+response_lang_detection <- httr2::request("https://api-free.deepl.com/v2/translate") |>
+  httr2::req_method("POST") |>
+  httr2::req_headers(
+    Authorization = paste0("DeepL-Auth-Key ", Sys.getenv("DEEPL_AUTH"))
+  ) |>
+  httr2::req_url_query(text = "Hello, world!") |>
+  httr2::req_url_query(source_lang_auto = "1") |>
+  httr2::req_url_query(target_lang = "DE") |>
+  httr2::req_perform()
+
+# Check the response status
+status_code_detection <- httr2::resp_status(response_lang_detection)
+
+# Check for successful response or handle errors
+if (status_code_detection == 200) {
+  detected_language <- httr2::resp_body_json(response_lang_detection)$translations[[1]]$detected_source_language
+  message("Detected Source Language:", detected_language, "\n")
+} else {
+  message("Error:", httr2::resp_body_json(response_lang_detection), "\n")
+}
+```
+
+
