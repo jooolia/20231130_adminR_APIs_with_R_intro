@@ -8,9 +8,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Basic example with Github
+# Example with Github
 
-Can I find anything out about AdminR githup repo?
+Github has an API. It can be helpful for finding information and doing operations
+on repositories, users, and organizations. You can also manage issues, pull requests,
+github actions, do code searching and other things. 
+
+Can I find anything out about AdminR github repo?
 
 See all the possibilities here: https://docs.github.com/rest
 
@@ -32,45 +36,71 @@ httr2::resp_status(response)
 ```{r}
 #| echo: true
 ## Parse the content
-httr2::resp_body_json(response)
+response |>
+  httr2::resp_headers()
+
 httr2::resp_header(response,
                    "content-type")
 
-str(httr2::resp_body_json(response))
+json_response <- httr2::resp_body_json(response)
 
-str(httr2::resp_body_json(response),
+str(json_response)
+
+str(json_response,
     max.level = 2,
     list.len = 10)
-
-## Convert JSON data to a data frame
-response_json <- httr2::resp_body_json(response)
-json_df <- jsonlite::fromJSON(jsonlite::toJSON(response_json))
 ```
 
-## Parsing into a dataframe
 
+## Getting the names of the repos
 
 ```{r}
 #| echo: true
 ## Extract the third element from each list element using sapply
-sapply(httr2::resp_body_json(response), function(x) x[3])
+sapply(json_response, function(x) x[3])
 
 ## Extract the third element from each list element using purrr
-purrr::map_chr(httr2::resp_body_json(response), ~ .[[3]])
+purrr::map_chr(json_response, ~ .[[3]])
 ```
 
-Note: always the possibility to examine the expected url in a webbrowser. 
+
+## Parsing into a dataframe
+
+```{r}
+#| echo: true
+## Convert JSON data to a data frame
+json_df <- jsonlite::fromJSON(jsonlite::toJSON(json_response))
+
+## How many repos?
+length(unlist(json_df$url))
+```
+
+
+Note: always the possibility to examine the expected url in a webbrowser. This can
+be helpful for troubleshooting.
+
+
 
 # Cytoscape
 
-Create and manipulate a basic network in Cytoscape using RCy3
+Create and manipulate a basic network in Cytoscape using RCy3.
+
+Cytoscape has been popular for exploring biological, social and other kinds of 
+networks. The software is very intuitive and helpful for data exploration and 
+visualization, and also provides opportunities for automation.
 
 ```{r, eval=FALSE}
+## to install RCy3
 install.packages("devtools")
 library(devtools)
 install_github("cytoscape/RCy3",
                build_vignettes = FALSE)
 ```
+
+We can test out using functions in a package that wrap the REST API, but we can also use cURL.
+In the Cytoscape example this can be useful if you are wanting to automate a plugin 
+that does not have functions in the R package, but still exposes a REST API.
+
 
 ```{r}
 #| echo: true
@@ -78,22 +108,34 @@ library(RCy3)
 cytoscapePing()
 cytoscapeVersionInfo()
 
+
+## alternative ways with curl:
 req <- curl::curl(url = "http://localhost:1234/v1/version")
 jsonlite::prettify(readLines(req))
+
+## Curl installed on my system
+system("curl http://localhost:1234/v1/version")
+
 ```
+
+
+curl is a versatile command-line tool for making HTTP requests, and it can be used for various types of requests, not just GET. By default, when you use curl without specifying a request method, it performs a GET request. You can also specify POST or PUT verbs. 
 
 ## Simple network example
 
 ```{r}
 #| echo: true
-nodes <- data.frame(id = c("node 0", "node 1", "node 2", "node 3"),
-                    group = c("A", "A", "B", "B"), # categorical strings
-                    score = as.integer(c(20, 10, 15, 5)), # integers
+nodes <- data.frame(id = c("node 0", "node 1", "node 2", "node 3", "node 4", "node 5", "node 6"),
+                    group = c("A", "A", "B", "B", "C", "C", "C"), # categorical strings
+                    score = as.integer(c(20, 10, 15, 5, 20, 5, 10)), # integers
                     stringsAsFactors = FALSE)
-edges <- data.frame(source = c("node 0", "node 0", "node 0", "node 2"),
-                    target = c("node 1", "node 2", "node 3", "node 3"),
-                    weight = c(5.1, 3.0, 5.2, 9.9), # numeric
+edges <- data.frame(source = c("node 0", "node 0", "node 0", "node 2", "node 2", "node 5", "node 4", "node 5", "node 1"),
+                    target = c("node 1", "node 2", "node 3", "node 3", "node 4", "node 6", "node 6", "node 1", "node 3"),
+                    weight = c(5.1, 3.0, 5.2, 9.9, 3.5, 4.5, 6, 5.3, 3), # numeric
                     stringsAsFactors = FALSE)
+
+simple_graph_ig <- igraph::graph_from_data_frame(edges, vertices = nodes)
+plot(simple_graph_ig)
 
 createNetworkFromDataFrames(nodes, edges,
                             title = "my first network",
@@ -101,30 +143,42 @@ createNetworkFromDataFrames(nodes, edges,
 
 layoutNetwork("circular")
 layoutNetwork("cose")
-
+setNodeShapeDefault("OCTAGON")
+setVisualStyle("Marquee")
+setVisualStyle("default")
+setNodeColorDefault("#AAFF88")
+setNodeSizeDefault(60)
+setNodeFontSizeDefault(5)
 ```
-## Les Miserables example
+
+In the context of Cytoscape, "mapping" typically refers to associating data attributes with visual properties of the network elements (e.g., nodes or edges). This process allows you to visually represent and analyze patterns or relationships present in your data.
+
+You can do this with data included with the nodes or edges are by associating another dataset. 
 
 ```{r}
 #| echo: true
-lesmis_file <- system.file("extdata",
-                           "lesmis.txt",
-                           package = "RCy3")
-lesmis <- read.table(lesmis_file, header = FALSE, sep = "\t")
+style_name <-  "myStyle"
+defaults <- list(NODE_SHAPE = "diamond",
+                 NODE_SIZE = 30,
+                 EDGE_TRANSPARENCY = 120)
+edge_width <- mapVisualProperty("edge width",
+                                "weight",
+                                "p") ## p for passthrough
 
-lesmis_ig <- igraph::graph.data.frame(lesmis,
-                                      directed = FALSE)
-plot(lesmis_ig)
+## The term "passthrough" implies that the values of these visual properties 
+## are passed through from the associated data columns without any transformation
 
-createNetworkFromIgraph(lesmis_ig, new.title = "Les Miserables")
+node_fill <- mapVisualProperty("node fill color",
+                               "score",
+                               "c",
+                               c(5, 10, 20),
+                               c("#99CCFF", "#FFFFFF", "#FF7777"))
+node_label <- mapVisualProperty("node label", "group", "p")
 
-layoutNetwork("circular")
-layoutNetwork("cose")
-setNodeShapeDefault("OCTAGON")
-setNodeColorDefault("#AAFF88")
-setNodeSizeDefault(60)
-setNodeFontSizeDefault(10)
+createVisualStyle(style_name, defaults, list(edge_width, node_fill, node_label))
+setVisualStyle(style_name)
 ```
+
 
 ## Cytoscape API documentation
 There is quite a bit of documentation available. This Swagger documentation is available for many APIs.
@@ -135,11 +189,15 @@ cyrestAPI()  # CyREST API
 commandsAPI()  # Commands API
 ```
 
+
 # DeepL API
 
-There are many different tools for doing translations. https://www.deepl.com/en/docs-api/
+There are many different tools for doing translations. 
 
-We get an example command for curl. How can we use that in R?
+This has been based on prototyping we were doing where we needed some translations
+https://www.deepl.com/en/docs-api/
+
+From the documentation, We get an example command for curl. How can we use that in R?
 
 ```         
 curl https://api-free.deepl.com/v2/translate -X POST  --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=Hello, world!' --data-urlencode 'target_lang=DE'
@@ -157,15 +215,18 @@ Here we will look at using the curl command with {httr2}
 #| echo: true
 httr2::curl_translate("curl http://example.com")
 
-## can get you started, but not all the way there
-httr2::curl_translate("curl 'https://api-free.deepl.com/v2/translate' -X POST --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=Hello, world! target_lang=DE' ", simplify_headers = FALSE)
+## Just a way to get you started, but not all the way there
+httr2::curl_translate("curl 'https://api-free.deepl.com/v2/translate' -X POST --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=The raccoon is sleeping in the tree. target_lang=DE' ",
+                      simplify_headers = FALSE)
 ```
 
 We can use that output to get started, but will add our needed query info
 
-
 ## Constructing the request
-Can use `httr2::req_dry_run()` instead of `httr2::req_perform()` to test out the request (did not include the example as this prints the Authorization to the screen and doc).
+
+Can use `httr2::req_dry_run()` instead of `httr2::req_perform()` to test out the
+request (did not include the example as this prints the Authorization to the 
+screen and doc).
 
 ```{r}
 #| echo: true
@@ -173,7 +234,7 @@ response <- httr2::request("https://api-free.deepl.com/v2/translate") |>
   httr2::req_method("POST") |>
   httr2::req_headers(Authorization = paste0("DeepL-Auth-Key ",
                                             Sys.getenv("DEEPL_AUTH"))) |>
-  httr2::req_url_query(text = "Hello, world!") |>
+  httr2::req_url_query(text = "The raccoon is sleeping in the tree.") |>
   httr2::req_url_query(target_lang = "DE") |>
   httr2::req_perform()
 
@@ -182,7 +243,8 @@ httr2::resp_status(response)
 # Parse the content
 httr2::resp_body_json(response)
 
-httr2::resp_header(response, "content-type")
+httr2::resp_header(response,
+                   "content-type")
 ```
 
 ## Reponse of translated text
@@ -196,6 +258,8 @@ translated_text
 
 ## Do language detection
 
+We can take a very similar approach, and add in that the language is detected during
+the translation.
 
 ```{r}
 #| echo: true
@@ -204,9 +268,10 @@ translated_text
 response_lang_detection <- httr2::request("https://api-free.deepl.com/v2/translate") |>
   httr2::req_method("POST") |>
   httr2::req_headers(
-    Authorization = paste0("DeepL-Auth-Key ", Sys.getenv("DEEPL_AUTH"))
+    Authorization = paste0("DeepL-Auth-Key ",
+                           Sys.getenv("DEEPL_AUTH"))
   ) |>
-  httr2::req_url_query(text = "Hello, world!") |>
+  httr2::req_url_query(text = "The raccoon is sleeping in the tree.") |>
   httr2::req_url_query(source_lang_auto = "1") |>
   httr2::req_url_query(target_lang = "DE") |>
   httr2::req_perform()
@@ -217,9 +282,13 @@ status_code_detection <- httr2::resp_status(response_lang_detection)
 # Check for successful response or handle errors
 if (status_code_detection == 200) {
   detected_language <- httr2::resp_body_json(response_lang_detection)$translations[[1]]$detected_source_language
-  message("Detected Source Language:", detected_language, "\n")
+  message("Detected Source Language:",
+          detected_language,
+          "\n")
 } else {
-  message("Error:", httr2::resp_body_json(response_lang_detection), "\n")
+  message("Error:",
+          httr2::resp_body_json(response_lang_detection),
+          "\n")
 }
 ```
 
