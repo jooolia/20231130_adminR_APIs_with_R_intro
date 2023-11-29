@@ -18,6 +18,12 @@ Can I find anything out about AdminR github repo?
 
 See all the possibilities here: https://docs.github.com/rest
 
+This walkthrough is mostly for understanding the basics, there could be a package 
+for something as popular as github already. ;)
+[{gh}]("https://github.com/r-lib/gh) could be of interest : "Minimalistic 
+GitHub API client in R."
+
+
 ```{r}
 #| echo: true
 ## GitHub API URL for Swiss AdminR organization repositories
@@ -80,7 +86,6 @@ Note: always the possibility to examine the expected url in a webbrowser. This c
 be helpful for troubleshooting.
 
 
-
 # Cytoscape
 
 Create and manipulate a basic network in Cytoscape using RCy3.
@@ -107,7 +112,6 @@ that does not have functions in the R package, but still exposes a REST API.
 library(RCy3)
 cytoscapePing()
 cytoscapeVersionInfo()
-
 
 ## alternative ways with curl:
 req <- curl::curl(url = "http://localhost:1234/v1/version")
