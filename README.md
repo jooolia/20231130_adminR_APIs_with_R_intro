@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository contains the code and presentation slides for the "API Talk with R" session. The talk is designed for R programmers who want to learn about interacting with APIs using the R programming language.
+This repository contains the code and presentation slides for the "API Talk with R" session presented at the adminR autumn 2023 meetup (link). The talk is designed for R programmers who want to learn about interacting with APIs using the R programming language.
 
 ## Talk Contents
 
@@ -19,7 +19,6 @@ This repository contains the code and presentation slides for the "API Talk with
 ## Key Topics Covered
 
 - Understanding what APIs are
-- Where to find data online
 - Introduction to REST APIs
 - Use cases applicable to data science
 - How to use an API with R
