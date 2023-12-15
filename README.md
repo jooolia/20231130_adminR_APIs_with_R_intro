@@ -3,7 +3,7 @@
 
 ## Overview
 
-This repository contains the code and presentation slides for the "API Talk with R" session presented at the adminR autumn 2023 meetup (link). The talk is designed for R programmers who want to learn about interacting with APIs using the R programming language.
+This repository contains the code and presentation slides for the "API Talk with R" session presented at the [adminR autumn 2023 meetup](https://www.meetup.com/adminr/events/296988080/). The talk is designed for R programmers who want to learn about interacting with APIs using the R programming language.
 
 ## Talk Contents
 
