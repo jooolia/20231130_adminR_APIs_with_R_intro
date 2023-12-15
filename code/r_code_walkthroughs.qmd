@@ -90,6 +90,14 @@ json_df
 nrow(json_df)
 ```
 
+Added after comments from Kirill Müller, that there is a package {tibblify}
+```{r}
+## install.packages("tibblify")
+json_tibble <- tibblify::tibblify(json_response)
+json_tibble
+```
+
+
 
 # Cytoscape
 
