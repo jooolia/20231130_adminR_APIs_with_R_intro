@@ -1,5 +1,5 @@
 
-# API Talk with R
+# Navigating APIs with R: An Introductory Overview
 
 ## Overview
 
@@ -10,11 +10,6 @@ This repository contains the code and presentation slides for the "API Talk with
 - **Slides:** The presentation slides cover the basics of APIs, how to interact with them using R, and their role in data science. Concrete examples are explored, including projects from Agroscope.
 
 - **Code:** The repository includes code snippets and examples used during the talk. These can serve as a reference for implementing API interactions in R.
-
-## Presentation Highlights
-
-- **Title:** Navigating APIs with R: An Introductory Overview
-- **Duration:** Approximately 30 minutes
 
 ## Key Topics Covered
 
@@ -34,16 +29,15 @@ This repository contains the code and presentation slides for the "API Talk with
 1. Ensure you have the required R packages installed. You can do this by running:
 
    ```R
-   install.packages(c("httr2", "jsonlite", "purrr", "devtools"))
+   install.packages(c("httr2", "jsonlite", "purrr", "devtools", "tibblify"))
    ```
-
 2. Open the R scripts in the "code" directory using your preferred R environment (e.g., RStudio).
-
-3. Run the code snippets to observe the interactions with APIs.
+3. Run the code snippets to observe the interactions with APIs. If you would like to run Cytoscape please see the link below on how to install the program. 
 
 ## Additional Resources
 
 - [httr2 Package Documentation](https://httr2.r-lib.org/)
+- [Cytoscape](https://cytoscape.org/)
 
 
 ## Feedback and Contributions
