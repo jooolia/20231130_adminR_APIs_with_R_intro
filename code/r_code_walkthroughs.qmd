@@ -155,9 +155,9 @@ edges <- data.frame(source = c("node 0", "node 0", "node 0", "node 2", "node 2",
 simple_graph_ig <- igraph::graph_from_data_frame(edges, vertices = nodes)
 plot(simple_graph_ig)
 
-createNetworkFromDataFrames(nodes, edges,
-                            title = "my first network",
-                            collection = "DataFrame Example")
+createNetworkFromDataFrames(nodes, 
+                            edges,
+                            title = "A bicycle club network")
 
 layoutNetwork("circular")
 layoutNetwork("cose")
