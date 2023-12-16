@@ -399,8 +399,9 @@
 <section id="example-with-github" class="title-slide slide level1 center">
 <h1>Example with Github</h1>
 <p>Github has an API. It can be helpful for finding information and doing operations on repositories, users, and organizations. You can also manage issues, pull requests, github actions, do code searching and other things.</p>
-<p>Can I find anything out about AdminR github repo?</p>
 <p>See all the possibilities here: https://docs.github.com/rest</p>
+<p>This walkthrough is mostly for understanding the basics, there could be a package for something as popular as github already. ;) <a href="%22https://github.com/r-lib/gh">{gh}</a> could be of interest : “Minimalistic GitHub API client in R.”</p>
+<p>Can I find anything out about AdminR github repo? How many repositories are contained in this organization?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="do">## GitHub API URL for Swiss AdminR organization repositories</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>github_url <span class="ot">&lt;-</span> <span class="st">"https://api.github.com/orgs/swiss-adminR/repos"</span></span>
@@ -408,27 +409,29 @@
 <span id="cb1-4"><a href="#cb1-4"></a><span class="do">## Make the API request</span></span>
 <span id="cb1-5"><a href="#cb1-5"></a>response <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(github_url) <span class="sc">|&gt;</span></span>
 <span id="cb1-6"><a href="#cb1-6"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
-<span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="do">## Check the response status</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a>httr2<span class="sc">::</span><span class="fu">resp_status</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7"></a>response</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="do">## Check the response status</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>httr2<span class="sc">::</span><span class="fu">resp_status</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 200</code></pre>
 </div>
 </div>
+<p>Note: often possible to examine the expected url in a webbrowser. This can be helpful for troubleshooting.</p>
 </section>
 <section id="parsing-the-content" class="slide level2">
 <h2>Parsing the content</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="do">## Parse the content</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="do">## Working with the headers</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>response <span class="sc">|&gt;</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>  httr2<span class="sc">::</span><span class="fu">resp_headers</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>server: GitHub.com
-date: Wed, 29 Nov 2023 21:28:04 GMT
+date: Sat, 16 Dec 2023 06:15:24 GMT
 content-type: application/json; charset=utf-8
 cache-control: public, max-age=60, s-maxage=60
 vary: Accept, Accept-Encoding, Accept, X-Requested-With
-etag: W/"9f0585c5bd7ccdaa73fe7e17c0254d277d3f0c660fe07293faf22863a182e861"
+etag: W/"e793d5b59c221344581c7dbf23a110edeb786984f8e98c83f8c0ca25bfafce04"
 x-github-media-type: github.v3; format=json
 x-github-api-version-selected: 2022-11-28
 access-control-expose-headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
@@ -441,23 +444,3113 @@ referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
 content-security-policy: default-src 'none'
 content-encoding: gzip
 x-ratelimit-limit: 60
-x-ratelimit-remaining: 56
-x-ratelimit-reset: 1701294869
+x-ratelimit-remaining: 58
+x-ratelimit-reset: 1702710865
 x-ratelimit-resource: core
-x-ratelimit-used: 4
+x-ratelimit-used: 2
 accept-ranges: bytes
-x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
+x-github-request-id: 4F99:0EA7:5A6408A:5B9B0E9:657D407C</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>httr2<span class="sc">::</span><span class="fu">resp_header</span>(response,</span>
 <span id="cb5-2"><a href="#cb5-2"></a>                   <span class="st">"content-type"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "application/json; charset=utf-8"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>json_response <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)</span>
-<span id="cb7-2"><a href="#cb7-2"></a></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">str</span>(json_response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="do">## Working with the body</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>json_response <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)</span>
+<span id="cb7-3"><a href="#cb7-3"></a>json_response</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>List of 9
+<pre><code>[[1]]
+[[1]]$id
+[1] 149717368
+
+[[1]]$node_id
+[1] "MDEwOlJlcG9zaXRvcnkxNDk3MTczNjg="
+
+[[1]]$name
+[1] "201809_slides"
+
+[[1]]$full_name
+[1] "swiss-adminR/201809_slides"
+
+[[1]]$private
+[1] FALSE
+
+[[1]]$owner
+[[1]]$owner$login
+[1] "swiss-adminR"
+
+[[1]]$owner$id
+[1] 43069200
+
+[[1]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[1]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[1]]$owner$gravatar_id
+[1] ""
+
+[[1]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[1]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[1]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[1]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[1]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[1]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[1]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[1]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[1]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[1]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[1]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[1]]$owner$type
+[1] "Organization"
+
+[[1]]$owner$site_admin
+[1] FALSE
+
+
+[[1]]$html_url
+[1] "https://github.com/swiss-adminR/201809_slides"
+
+[[1]]$description
+[1] "Slides of our first Meetup, 20. September 2018 @ SECO"
+
+[[1]]$fork
+[1] FALSE
+
+[[1]]$url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides"
+
+[[1]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/forks"
+
+[[1]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/keys{/key_id}"
+
+[[1]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/collaborators{/collaborator}"
+
+[[1]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/teams"
+
+[[1]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/hooks"
+
+[[1]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/issues/events{/number}"
+
+[[1]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/events"
+
+[[1]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/assignees{/user}"
+
+[[1]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/branches{/branch}"
+
+[[1]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/tags"
+
+[[1]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/git/blobs{/sha}"
+
+[[1]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/git/tags{/sha}"
+
+[[1]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/git/refs{/sha}"
+
+[[1]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/git/trees{/sha}"
+
+[[1]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/statuses/{sha}"
+
+[[1]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/languages"
+
+[[1]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/stargazers"
+
+[[1]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/contributors"
+
+[[1]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/subscribers"
+
+[[1]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/subscription"
+
+[[1]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/commits{/sha}"
+
+[[1]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/git/commits{/sha}"
+
+[[1]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/comments{/number}"
+
+[[1]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/issues/comments{/number}"
+
+[[1]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/contents/{+path}"
+
+[[1]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/compare/{base}...{head}"
+
+[[1]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/merges"
+
+[[1]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/{archive_format}{/ref}"
+
+[[1]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/downloads"
+
+[[1]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/issues{/number}"
+
+[[1]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/pulls{/number}"
+
+[[1]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/milestones{/number}"
+
+[[1]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/notifications{?since,all,participating}"
+
+[[1]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/labels{/name}"
+
+[[1]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/releases{/id}"
+
+[[1]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/201809_slides/deployments"
+
+[[1]]$created_at
+[1] "2018-09-21T06:03:51Z"
+
+[[1]]$updated_at
+[1] "2022-02-03T11:01:52Z"
+
+[[1]]$pushed_at
+[1] "2018-09-25T08:13:33Z"
+
+[[1]]$git_url
+[1] "git://github.com/swiss-adminR/201809_slides.git"
+
+[[1]]$ssh_url
+[1] "git@github.com:swiss-adminR/201809_slides.git"
+
+[[1]]$clone_url
+[1] "https://github.com/swiss-adminR/201809_slides.git"
+
+[[1]]$svn_url
+[1] "https://github.com/swiss-adminR/201809_slides"
+
+[[1]]$homepage
+[1] ""
+
+[[1]]$size
+[1] 2367
+
+[[1]]$stargazers_count
+[1] 6
+
+[[1]]$watchers_count
+[1] 6
+
+[[1]]$language
+NULL
+
+[[1]]$has_issues
+[1] TRUE
+
+[[1]]$has_projects
+[1] TRUE
+
+[[1]]$has_downloads
+[1] TRUE
+
+[[1]]$has_wiki
+[1] TRUE
+
+[[1]]$has_pages
+[1] FALSE
+
+[[1]]$has_discussions
+[1] FALSE
+
+[[1]]$forks_count
+[1] 1
+
+[[1]]$mirror_url
+NULL
+
+[[1]]$archived
+[1] FALSE
+
+[[1]]$disabled
+[1] FALSE
+
+[[1]]$open_issues_count
+[1] 0
+
+[[1]]$license
+NULL
+
+[[1]]$allow_forking
+[1] TRUE
+
+[[1]]$is_template
+[1] FALSE
+
+[[1]]$web_commit_signoff_required
+[1] FALSE
+
+[[1]]$topics
+list()
+
+[[1]]$visibility
+[1] "public"
+
+[[1]]$forks
+[1] 1
+
+[[1]]$open_issues
+[1] 0
+
+[[1]]$watchers
+[1] 6
+
+[[1]]$default_branch
+[1] "master"
+
+[[1]]$permissions
+[[1]]$permissions$admin
+[1] FALSE
+
+[[1]]$permissions$maintain
+[1] FALSE
+
+[[1]]$permissions$push
+[1] FALSE
+
+[[1]]$permissions$triage
+[1] FALSE
+
+[[1]]$permissions$pull
+[1] TRUE
+
+
+
+[[2]]
+[[2]]$id
+[1] 175794847
+
+[[2]]$node_id
+[1] "MDEwOlJlcG9zaXRvcnkxNzU3OTQ4NDc="
+
+[[2]]$name
+[1] "201903_slides"
+
+[[2]]$full_name
+[1] "swiss-adminR/201903_slides"
+
+[[2]]$private
+[1] FALSE
+
+[[2]]$owner
+[[2]]$owner$login
+[1] "swiss-adminR"
+
+[[2]]$owner$id
+[1] 43069200
+
+[[2]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[2]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[2]]$owner$gravatar_id
+[1] ""
+
+[[2]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[2]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[2]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[2]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[2]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[2]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[2]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[2]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[2]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[2]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[2]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[2]]$owner$type
+[1] "Organization"
+
+[[2]]$owner$site_admin
+[1] FALSE
+
+
+[[2]]$html_url
+[1] "https://github.com/swiss-adminR/201903_slides"
+
+[[2]]$description
+[1] "Slides of the spring edition Meetup, 14. March 2019 @ KOF"
+
+[[2]]$fork
+[1] FALSE
+
+[[2]]$url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides"
+
+[[2]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/forks"
+
+[[2]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/keys{/key_id}"
+
+[[2]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/collaborators{/collaborator}"
+
+[[2]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/teams"
+
+[[2]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/hooks"
+
+[[2]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/issues/events{/number}"
+
+[[2]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/events"
+
+[[2]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/assignees{/user}"
+
+[[2]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/branches{/branch}"
+
+[[2]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/tags"
+
+[[2]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/git/blobs{/sha}"
+
+[[2]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/git/tags{/sha}"
+
+[[2]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/git/refs{/sha}"
+
+[[2]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/git/trees{/sha}"
+
+[[2]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/statuses/{sha}"
+
+[[2]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/languages"
+
+[[2]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/stargazers"
+
+[[2]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/contributors"
+
+[[2]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/subscribers"
+
+[[2]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/subscription"
+
+[[2]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/commits{/sha}"
+
+[[2]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/git/commits{/sha}"
+
+[[2]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/comments{/number}"
+
+[[2]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/issues/comments{/number}"
+
+[[2]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/contents/{+path}"
+
+[[2]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/compare/{base}...{head}"
+
+[[2]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/merges"
+
+[[2]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/{archive_format}{/ref}"
+
+[[2]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/downloads"
+
+[[2]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/issues{/number}"
+
+[[2]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/pulls{/number}"
+
+[[2]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/milestones{/number}"
+
+[[2]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/notifications{?since,all,participating}"
+
+[[2]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/labels{/name}"
+
+[[2]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/releases{/id}"
+
+[[2]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/201903_slides/deployments"
+
+[[2]]$created_at
+[1] "2019-03-15T10:00:46Z"
+
+[[2]]$updated_at
+[1] "2021-09-29T09:28:40Z"
+
+[[2]]$pushed_at
+[1] "2019-03-28T15:18:39Z"
+
+[[2]]$git_url
+[1] "git://github.com/swiss-adminR/201903_slides.git"
+
+[[2]]$ssh_url
+[1] "git@github.com:swiss-adminR/201903_slides.git"
+
+[[2]]$clone_url
+[1] "https://github.com/swiss-adminR/201903_slides.git"
+
+[[2]]$svn_url
+[1] "https://github.com/swiss-adminR/201903_slides"
+
+[[2]]$homepage
+NULL
+
+[[2]]$size
+[1] 4642
+
+[[2]]$stargazers_count
+[1] 1
+
+[[2]]$watchers_count
+[1] 1
+
+[[2]]$language
+NULL
+
+[[2]]$has_issues
+[1] TRUE
+
+[[2]]$has_projects
+[1] TRUE
+
+[[2]]$has_downloads
+[1] TRUE
+
+[[2]]$has_wiki
+[1] TRUE
+
+[[2]]$has_pages
+[1] FALSE
+
+[[2]]$has_discussions
+[1] FALSE
+
+[[2]]$forks_count
+[1] 0
+
+[[2]]$mirror_url
+NULL
+
+[[2]]$archived
+[1] FALSE
+
+[[2]]$disabled
+[1] FALSE
+
+[[2]]$open_issues_count
+[1] 0
+
+[[2]]$license
+NULL
+
+[[2]]$allow_forking
+[1] TRUE
+
+[[2]]$is_template
+[1] FALSE
+
+[[2]]$web_commit_signoff_required
+[1] FALSE
+
+[[2]]$topics
+list()
+
+[[2]]$visibility
+[1] "public"
+
+[[2]]$forks
+[1] 0
+
+[[2]]$open_issues
+[1] 0
+
+[[2]]$watchers
+[1] 1
+
+[[2]]$default_branch
+[1] "master"
+
+[[2]]$permissions
+[[2]]$permissions$admin
+[1] FALSE
+
+[[2]]$permissions$maintain
+[1] FALSE
+
+[[2]]$permissions$push
+[1] FALSE
+
+[[2]]$permissions$triage
+[1] FALSE
+
+[[2]]$permissions$pull
+[1] TRUE
+
+
+
+[[3]]
+[[3]]$id
+[1] 209717910
+
+[[3]]$node_id
+[1] "MDEwOlJlcG9zaXRvcnkyMDk3MTc5MTA="
+
+[[3]]$name
+[1] "201909_slides"
+
+[[3]]$full_name
+[1] "swiss-adminR/201909_slides"
+
+[[3]]$private
+[1] FALSE
+
+[[3]]$owner
+[[3]]$owner$login
+[1] "swiss-adminR"
+
+[[3]]$owner$id
+[1] 43069200
+
+[[3]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[3]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[3]]$owner$gravatar_id
+[1] ""
+
+[[3]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[3]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[3]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[3]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[3]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[3]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[3]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[3]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[3]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[3]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[3]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[3]]$owner$type
+[1] "Organization"
+
+[[3]]$owner$site_admin
+[1] FALSE
+
+
+[[3]]$html_url
+[1] "https://github.com/swiss-adminR/201909_slides"
+
+[[3]]$description
+[1] "Slides of the autumn edition Meetup, 19. September 2019 @ Fribourg"
+
+[[3]]$fork
+[1] FALSE
+
+[[3]]$url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides"
+
+[[3]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/forks"
+
+[[3]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/keys{/key_id}"
+
+[[3]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/collaborators{/collaborator}"
+
+[[3]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/teams"
+
+[[3]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/hooks"
+
+[[3]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/issues/events{/number}"
+
+[[3]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/events"
+
+[[3]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/assignees{/user}"
+
+[[3]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/branches{/branch}"
+
+[[3]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/tags"
+
+[[3]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/git/blobs{/sha}"
+
+[[3]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/git/tags{/sha}"
+
+[[3]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/git/refs{/sha}"
+
+[[3]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/git/trees{/sha}"
+
+[[3]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/statuses/{sha}"
+
+[[3]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/languages"
+
+[[3]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/stargazers"
+
+[[3]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/contributors"
+
+[[3]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/subscribers"
+
+[[3]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/subscription"
+
+[[3]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/commits{/sha}"
+
+[[3]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/git/commits{/sha}"
+
+[[3]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/comments{/number}"
+
+[[3]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/issues/comments{/number}"
+
+[[3]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/contents/{+path}"
+
+[[3]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/compare/{base}...{head}"
+
+[[3]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/merges"
+
+[[3]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/{archive_format}{/ref}"
+
+[[3]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/downloads"
+
+[[3]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/issues{/number}"
+
+[[3]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/pulls{/number}"
+
+[[3]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/milestones{/number}"
+
+[[3]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/notifications{?since,all,participating}"
+
+[[3]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/labels{/name}"
+
+[[3]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/releases{/id}"
+
+[[3]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/201909_slides/deployments"
+
+[[3]]$created_at
+[1] "2019-09-20T06:10:45Z"
+
+[[3]]$updated_at
+[1] "2019-10-15T07:03:30Z"
+
+[[3]]$pushed_at
+[1] "2019-09-20T16:53:16Z"
+
+[[3]]$git_url
+[1] "git://github.com/swiss-adminR/201909_slides.git"
+
+[[3]]$ssh_url
+[1] "git@github.com:swiss-adminR/201909_slides.git"
+
+[[3]]$clone_url
+[1] "https://github.com/swiss-adminR/201909_slides.git"
+
+[[3]]$svn_url
+[1] "https://github.com/swiss-adminR/201909_slides"
+
+[[3]]$homepage
+NULL
+
+[[3]]$size
+[1] 1957
+
+[[3]]$stargazers_count
+[1] 3
+
+[[3]]$watchers_count
+[1] 3
+
+[[3]]$language
+NULL
+
+[[3]]$has_issues
+[1] TRUE
+
+[[3]]$has_projects
+[1] TRUE
+
+[[3]]$has_downloads
+[1] TRUE
+
+[[3]]$has_wiki
+[1] TRUE
+
+[[3]]$has_pages
+[1] FALSE
+
+[[3]]$has_discussions
+[1] FALSE
+
+[[3]]$forks_count
+[1] 0
+
+[[3]]$mirror_url
+NULL
+
+[[3]]$archived
+[1] FALSE
+
+[[3]]$disabled
+[1] FALSE
+
+[[3]]$open_issues_count
+[1] 0
+
+[[3]]$license
+NULL
+
+[[3]]$allow_forking
+[1] TRUE
+
+[[3]]$is_template
+[1] FALSE
+
+[[3]]$web_commit_signoff_required
+[1] FALSE
+
+[[3]]$topics
+list()
+
+[[3]]$visibility
+[1] "public"
+
+[[3]]$forks
+[1] 0
+
+[[3]]$open_issues
+[1] 0
+
+[[3]]$watchers
+[1] 3
+
+[[3]]$default_branch
+[1] "master"
+
+[[3]]$permissions
+[[3]]$permissions$admin
+[1] FALSE
+
+[[3]]$permissions$maintain
+[1] FALSE
+
+[[3]]$permissions$push
+[1] FALSE
+
+[[3]]$permissions$triage
+[1] FALSE
+
+[[3]]$permissions$pull
+[1] TRUE
+
+
+
+[[4]]
+[[4]]$id
+[1] 352101485
+
+[[4]]$node_id
+[1] "MDEwOlJlcG9zaXRvcnkzNTIxMDE0ODU="
+
+[[4]]$name
+[1] "202103_slides"
+
+[[4]]$full_name
+[1] "swiss-adminR/202103_slides"
+
+[[4]]$private
+[1] FALSE
+
+[[4]]$owner
+[[4]]$owner$login
+[1] "swiss-adminR"
+
+[[4]]$owner$id
+[1] 43069200
+
+[[4]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[4]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[4]]$owner$gravatar_id
+[1] ""
+
+[[4]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[4]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[4]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[4]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[4]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[4]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[4]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[4]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[4]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[4]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[4]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[4]]$owner$type
+[1] "Organization"
+
+[[4]]$owner$site_admin
+[1] FALSE
+
+
+[[4]]$html_url
+[1] "https://github.com/swiss-adminR/202103_slides"
+
+[[4]]$description
+[1] "Slides of the spring edition Meetup, 18. March 2021 @ Zoom"
+
+[[4]]$fork
+[1] FALSE
+
+[[4]]$url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides"
+
+[[4]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/forks"
+
+[[4]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/keys{/key_id}"
+
+[[4]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/collaborators{/collaborator}"
+
+[[4]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/teams"
+
+[[4]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/hooks"
+
+[[4]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/issues/events{/number}"
+
+[[4]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/events"
+
+[[4]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/assignees{/user}"
+
+[[4]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/branches{/branch}"
+
+[[4]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/tags"
+
+[[4]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/git/blobs{/sha}"
+
+[[4]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/git/tags{/sha}"
+
+[[4]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/git/refs{/sha}"
+
+[[4]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/git/trees{/sha}"
+
+[[4]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/statuses/{sha}"
+
+[[4]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/languages"
+
+[[4]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/stargazers"
+
+[[4]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/contributors"
+
+[[4]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/subscribers"
+
+[[4]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/subscription"
+
+[[4]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/commits{/sha}"
+
+[[4]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/git/commits{/sha}"
+
+[[4]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/comments{/number}"
+
+[[4]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/issues/comments{/number}"
+
+[[4]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/contents/{+path}"
+
+[[4]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/compare/{base}...{head}"
+
+[[4]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/merges"
+
+[[4]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/{archive_format}{/ref}"
+
+[[4]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/downloads"
+
+[[4]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/issues{/number}"
+
+[[4]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/pulls{/number}"
+
+[[4]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/milestones{/number}"
+
+[[4]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/notifications{?since,all,participating}"
+
+[[4]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/labels{/name}"
+
+[[4]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/releases{/id}"
+
+[[4]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/202103_slides/deployments"
+
+[[4]]$created_at
+[1] "2021-03-27T15:02:18Z"
+
+[[4]]$updated_at
+[1] "2022-02-03T11:02:08Z"
+
+[[4]]$pushed_at
+[1] "2021-04-16T15:03:37Z"
+
+[[4]]$git_url
+[1] "git://github.com/swiss-adminR/202103_slides.git"
+
+[[4]]$ssh_url
+[1] "git@github.com:swiss-adminR/202103_slides.git"
+
+[[4]]$clone_url
+[1] "https://github.com/swiss-adminR/202103_slides.git"
+
+[[4]]$svn_url
+[1] "https://github.com/swiss-adminR/202103_slides"
+
+[[4]]$homepage
+NULL
+
+[[4]]$size
+[1] 2625
+
+[[4]]$stargazers_count
+[1] 1
+
+[[4]]$watchers_count
+[1] 1
+
+[[4]]$language
+NULL
+
+[[4]]$has_issues
+[1] TRUE
+
+[[4]]$has_projects
+[1] TRUE
+
+[[4]]$has_downloads
+[1] TRUE
+
+[[4]]$has_wiki
+[1] TRUE
+
+[[4]]$has_pages
+[1] FALSE
+
+[[4]]$has_discussions
+[1] FALSE
+
+[[4]]$forks_count
+[1] 0
+
+[[4]]$mirror_url
+NULL
+
+[[4]]$archived
+[1] FALSE
+
+[[4]]$disabled
+[1] FALSE
+
+[[4]]$open_issues_count
+[1] 0
+
+[[4]]$license
+NULL
+
+[[4]]$allow_forking
+[1] TRUE
+
+[[4]]$is_template
+[1] FALSE
+
+[[4]]$web_commit_signoff_required
+[1] FALSE
+
+[[4]]$topics
+list()
+
+[[4]]$visibility
+[1] "public"
+
+[[4]]$forks
+[1] 0
+
+[[4]]$open_issues
+[1] 0
+
+[[4]]$watchers
+[1] 1
+
+[[4]]$default_branch
+[1] "main"
+
+[[4]]$permissions
+[[4]]$permissions$admin
+[1] FALSE
+
+[[4]]$permissions$maintain
+[1] FALSE
+
+[[4]]$permissions$push
+[1] FALSE
+
+[[4]]$permissions$triage
+[1] FALSE
+
+[[4]]$permissions$pull
+[1] TRUE
+
+
+
+[[5]]
+[[5]]$id
+[1] 387813191
+
+[[5]]$node_id
+[1] "MDEwOlJlcG9zaXRvcnkzODc4MTMxOTE="
+
+[[5]]$name
+[1] "pkgs"
+
+[[5]]$full_name
+[1] "swiss-adminR/pkgs"
+
+[[5]]$private
+[1] FALSE
+
+[[5]]$owner
+[[5]]$owner$login
+[1] "swiss-adminR"
+
+[[5]]$owner$id
+[1] 43069200
+
+[[5]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[5]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[5]]$owner$gravatar_id
+[1] ""
+
+[[5]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[5]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[5]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[5]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[5]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[5]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[5]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[5]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[5]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[5]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[5]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[5]]$owner$type
+[1] "Organization"
+
+[[5]]$owner$site_admin
+[1] FALSE
+
+
+[[5]]$html_url
+[1] "https://github.com/swiss-adminR/pkgs"
+
+[[5]]$description
+[1] "A curated list of R packages created and used by Swiss public institutions"
+
+[[5]]$fork
+[1] FALSE
+
+[[5]]$url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs"
+
+[[5]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/forks"
+
+[[5]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/keys{/key_id}"
+
+[[5]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/collaborators{/collaborator}"
+
+[[5]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/teams"
+
+[[5]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/hooks"
+
+[[5]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/issues/events{/number}"
+
+[[5]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/events"
+
+[[5]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/assignees{/user}"
+
+[[5]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/branches{/branch}"
+
+[[5]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/tags"
+
+[[5]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/git/blobs{/sha}"
+
+[[5]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/git/tags{/sha}"
+
+[[5]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/git/refs{/sha}"
+
+[[5]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/git/trees{/sha}"
+
+[[5]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/statuses/{sha}"
+
+[[5]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/languages"
+
+[[5]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/stargazers"
+
+[[5]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/contributors"
+
+[[5]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/subscribers"
+
+[[5]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/subscription"
+
+[[5]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/commits{/sha}"
+
+[[5]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/git/commits{/sha}"
+
+[[5]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/comments{/number}"
+
+[[5]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/issues/comments{/number}"
+
+[[5]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/contents/{+path}"
+
+[[5]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/compare/{base}...{head}"
+
+[[5]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/merges"
+
+[[5]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/{archive_format}{/ref}"
+
+[[5]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/downloads"
+
+[[5]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/issues{/number}"
+
+[[5]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/pulls{/number}"
+
+[[5]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/milestones{/number}"
+
+[[5]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/notifications{?since,all,participating}"
+
+[[5]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/labels{/name}"
+
+[[5]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/releases{/id}"
+
+[[5]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/pkgs/deployments"
+
+[[5]]$created_at
+[1] "2021-07-20T14:11:39Z"
+
+[[5]]$updated_at
+[1] "2023-09-27T13:34:31Z"
+
+[[5]]$pushed_at
+[1] "2022-10-25T07:47:37Z"
+
+[[5]]$git_url
+[1] "git://github.com/swiss-adminR/pkgs.git"
+
+[[5]]$ssh_url
+[1] "git@github.com:swiss-adminR/pkgs.git"
+
+[[5]]$clone_url
+[1] "https://github.com/swiss-adminR/pkgs.git"
+
+[[5]]$svn_url
+[1] "https://github.com/swiss-adminR/pkgs"
+
+[[5]]$homepage
+[1] "https://swiss-adminr.github.io/pkgs/"
+
+[[5]]$size
+[1] 76
+
+[[5]]$stargazers_count
+[1] 9
+
+[[5]]$watchers_count
+[1] 9
+
+[[5]]$language
+NULL
+
+[[5]]$has_issues
+[1] TRUE
+
+[[5]]$has_projects
+[1] TRUE
+
+[[5]]$has_downloads
+[1] TRUE
+
+[[5]]$has_wiki
+[1] TRUE
+
+[[5]]$has_pages
+[1] TRUE
+
+[[5]]$has_discussions
+[1] FALSE
+
+[[5]]$forks_count
+[1] 3
+
+[[5]]$mirror_url
+NULL
+
+[[5]]$archived
+[1] FALSE
+
+[[5]]$disabled
+[1] FALSE
+
+[[5]]$open_issues_count
+[1] 2
+
+[[5]]$license
+NULL
+
+[[5]]$allow_forking
+[1] TRUE
+
+[[5]]$is_template
+[1] FALSE
+
+[[5]]$web_commit_signoff_required
+[1] FALSE
+
+[[5]]$topics
+list()
+
+[[5]]$visibility
+[1] "public"
+
+[[5]]$forks
+[1] 3
+
+[[5]]$open_issues
+[1] 2
+
+[[5]]$watchers
+[1] 9
+
+[[5]]$default_branch
+[1] "main"
+
+[[5]]$permissions
+[[5]]$permissions$admin
+[1] FALSE
+
+[[5]]$permissions$maintain
+[1] FALSE
+
+[[5]]$permissions$push
+[1] FALSE
+
+[[5]]$permissions$triage
+[1] FALSE
+
+[[5]]$permissions$pull
+[1] TRUE
+
+
+
+[[6]]
+[[6]]$id
+[1] 499020163
+
+[[6]]$node_id
+[1] "R_kgDOHb5xgw"
+
+[[6]]$name
+[1] "202205_slides"
+
+[[6]]$full_name
+[1] "swiss-adminR/202205_slides"
+
+[[6]]$private
+[1] FALSE
+
+[[6]]$owner
+[[6]]$owner$login
+[1] "swiss-adminR"
+
+[[6]]$owner$id
+[1] 43069200
+
+[[6]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[6]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[6]]$owner$gravatar_id
+[1] ""
+
+[[6]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[6]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[6]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[6]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[6]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[6]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[6]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[6]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[6]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[6]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[6]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[6]]$owner$type
+[1] "Organization"
+
+[[6]]$owner$site_admin
+[1] FALSE
+
+
+[[6]]$html_url
+[1] "https://github.com/swiss-adminR/202205_slides"
+
+[[6]]$description
+[1] "slides of the spring meetup 2022"
+
+[[6]]$fork
+[1] FALSE
+
+[[6]]$url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides"
+
+[[6]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/forks"
+
+[[6]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/keys{/key_id}"
+
+[[6]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/collaborators{/collaborator}"
+
+[[6]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/teams"
+
+[[6]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/hooks"
+
+[[6]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/issues/events{/number}"
+
+[[6]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/events"
+
+[[6]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/assignees{/user}"
+
+[[6]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/branches{/branch}"
+
+[[6]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/tags"
+
+[[6]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/git/blobs{/sha}"
+
+[[6]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/git/tags{/sha}"
+
+[[6]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/git/refs{/sha}"
+
+[[6]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/git/trees{/sha}"
+
+[[6]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/statuses/{sha}"
+
+[[6]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/languages"
+
+[[6]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/stargazers"
+
+[[6]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/contributors"
+
+[[6]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/subscribers"
+
+[[6]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/subscription"
+
+[[6]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/commits{/sha}"
+
+[[6]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/git/commits{/sha}"
+
+[[6]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/comments{/number}"
+
+[[6]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/issues/comments{/number}"
+
+[[6]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/contents/{+path}"
+
+[[6]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/compare/{base}...{head}"
+
+[[6]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/merges"
+
+[[6]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/{archive_format}{/ref}"
+
+[[6]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/downloads"
+
+[[6]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/issues{/number}"
+
+[[6]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/pulls{/number}"
+
+[[6]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/milestones{/number}"
+
+[[6]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/notifications{?since,all,participating}"
+
+[[6]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/labels{/name}"
+
+[[6]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/releases{/id}"
+
+[[6]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/202205_slides/deployments"
+
+[[6]]$created_at
+[1] "2022-06-02T06:35:53Z"
+
+[[6]]$updated_at
+[1] "2022-06-02T19:24:08Z"
+
+[[6]]$pushed_at
+[1] "2022-06-02T19:23:03Z"
+
+[[6]]$git_url
+[1] "git://github.com/swiss-adminR/202205_slides.git"
+
+[[6]]$ssh_url
+[1] "git@github.com:swiss-adminR/202205_slides.git"
+
+[[6]]$clone_url
+[1] "https://github.com/swiss-adminR/202205_slides.git"
+
+[[6]]$svn_url
+[1] "https://github.com/swiss-adminR/202205_slides"
+
+[[6]]$homepage
+[1] "https://www.meetup.com/adminR/events/285121068/"
+
+[[6]]$size
+[1] 3176
+
+[[6]]$stargazers_count
+[1] 0
+
+[[6]]$watchers_count
+[1] 0
+
+[[6]]$language
+NULL
+
+[[6]]$has_issues
+[1] TRUE
+
+[[6]]$has_projects
+[1] TRUE
+
+[[6]]$has_downloads
+[1] TRUE
+
+[[6]]$has_wiki
+[1] TRUE
+
+[[6]]$has_pages
+[1] FALSE
+
+[[6]]$has_discussions
+[1] FALSE
+
+[[6]]$forks_count
+[1] 0
+
+[[6]]$mirror_url
+NULL
+
+[[6]]$archived
+[1] FALSE
+
+[[6]]$disabled
+[1] FALSE
+
+[[6]]$open_issues_count
+[1] 0
+
+[[6]]$license
+NULL
+
+[[6]]$allow_forking
+[1] TRUE
+
+[[6]]$is_template
+[1] FALSE
+
+[[6]]$web_commit_signoff_required
+[1] FALSE
+
+[[6]]$topics
+list()
+
+[[6]]$visibility
+[1] "public"
+
+[[6]]$forks
+[1] 0
+
+[[6]]$open_issues
+[1] 0
+
+[[6]]$watchers
+[1] 0
+
+[[6]]$default_branch
+[1] "main"
+
+[[6]]$permissions
+[[6]]$permissions$admin
+[1] FALSE
+
+[[6]]$permissions$maintain
+[1] FALSE
+
+[[6]]$permissions$push
+[1] FALSE
+
+[[6]]$permissions$triage
+[1] FALSE
+
+[[6]]$permissions$pull
+[1] TRUE
+
+
+
+[[7]]
+[[7]]$id
+[1] 576216609
+
+[[7]]$node_id
+[1] "R_kgDOIlheIQ"
+
+[[7]]$name
+[1] "2022_12"
+
+[[7]]$full_name
+[1] "swiss-adminR/2022_12"
+
+[[7]]$private
+[1] FALSE
+
+[[7]]$owner
+[[7]]$owner$login
+[1] "swiss-adminR"
+
+[[7]]$owner$id
+[1] 43069200
+
+[[7]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[7]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[7]]$owner$gravatar_id
+[1] ""
+
+[[7]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[7]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[7]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[7]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[7]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[7]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[7]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[7]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[7]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[7]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[7]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[7]]$owner$type
+[1] "Organization"
+
+[[7]]$owner$site_admin
+[1] FALSE
+
+
+[[7]]$html_url
+[1] "https://github.com/swiss-adminR/2022_12"
+
+[[7]]$description
+NULL
+
+[[7]]$fork
+[1] FALSE
+
+[[7]]$url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12"
+
+[[7]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/forks"
+
+[[7]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/keys{/key_id}"
+
+[[7]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/collaborators{/collaborator}"
+
+[[7]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/teams"
+
+[[7]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/hooks"
+
+[[7]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/issues/events{/number}"
+
+[[7]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/events"
+
+[[7]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/assignees{/user}"
+
+[[7]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/branches{/branch}"
+
+[[7]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/tags"
+
+[[7]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/git/blobs{/sha}"
+
+[[7]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/git/tags{/sha}"
+
+[[7]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/git/refs{/sha}"
+
+[[7]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/git/trees{/sha}"
+
+[[7]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/statuses/{sha}"
+
+[[7]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/languages"
+
+[[7]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/stargazers"
+
+[[7]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/contributors"
+
+[[7]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/subscribers"
+
+[[7]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/subscription"
+
+[[7]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/commits{/sha}"
+
+[[7]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/git/commits{/sha}"
+
+[[7]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/comments{/number}"
+
+[[7]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/issues/comments{/number}"
+
+[[7]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/contents/{+path}"
+
+[[7]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/compare/{base}...{head}"
+
+[[7]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/merges"
+
+[[7]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/{archive_format}{/ref}"
+
+[[7]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/downloads"
+
+[[7]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/issues{/number}"
+
+[[7]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/pulls{/number}"
+
+[[7]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/milestones{/number}"
+
+[[7]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/notifications{?since,all,participating}"
+
+[[7]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/labels{/name}"
+
+[[7]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/releases{/id}"
+
+[[7]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/2022_12/deployments"
+
+[[7]]$created_at
+[1] "2022-12-09T09:34:03Z"
+
+[[7]]$updated_at
+[1] "2022-12-09T13:18:08Z"
+
+[[7]]$pushed_at
+[1] "2022-12-09T13:26:55Z"
+
+[[7]]$git_url
+[1] "git://github.com/swiss-adminR/2022_12.git"
+
+[[7]]$ssh_url
+[1] "git@github.com:swiss-adminR/2022_12.git"
+
+[[7]]$clone_url
+[1] "https://github.com/swiss-adminR/2022_12.git"
+
+[[7]]$svn_url
+[1] "https://github.com/swiss-adminR/2022_12"
+
+[[7]]$homepage
+NULL
+
+[[7]]$size
+[1] 8935
+
+[[7]]$stargazers_count
+[1] 0
+
+[[7]]$watchers_count
+[1] 0
+
+[[7]]$language
+[1] "R"
+
+[[7]]$has_issues
+[1] TRUE
+
+[[7]]$has_projects
+[1] TRUE
+
+[[7]]$has_downloads
+[1] TRUE
+
+[[7]]$has_wiki
+[1] TRUE
+
+[[7]]$has_pages
+[1] FALSE
+
+[[7]]$has_discussions
+[1] FALSE
+
+[[7]]$forks_count
+[1] 0
+
+[[7]]$mirror_url
+NULL
+
+[[7]]$archived
+[1] FALSE
+
+[[7]]$disabled
+[1] FALSE
+
+[[7]]$open_issues_count
+[1] 0
+
+[[7]]$license
+NULL
+
+[[7]]$allow_forking
+[1] TRUE
+
+[[7]]$is_template
+[1] FALSE
+
+[[7]]$web_commit_signoff_required
+[1] FALSE
+
+[[7]]$topics
+list()
+
+[[7]]$visibility
+[1] "public"
+
+[[7]]$forks
+[1] 0
+
+[[7]]$open_issues
+[1] 0
+
+[[7]]$watchers
+[1] 0
+
+[[7]]$default_branch
+[1] "main"
+
+[[7]]$permissions
+[[7]]$permissions$admin
+[1] FALSE
+
+[[7]]$permissions$maintain
+[1] FALSE
+
+[[7]]$permissions$push
+[1] FALSE
+
+[[7]]$permissions$triage
+[1] FALSE
+
+[[7]]$permissions$pull
+[1] TRUE
+
+
+
+[[8]]
+[[8]]$id
+[1] 583423235
+
+[[8]]$node_id
+[1] "R_kgDOIsZVAw"
+
+[[8]]$name
+[1] "202212_slides"
+
+[[8]]$full_name
+[1] "swiss-adminR/202212_slides"
+
+[[8]]$private
+[1] FALSE
+
+[[8]]$owner
+[[8]]$owner$login
+[1] "swiss-adminR"
+
+[[8]]$owner$id
+[1] 43069200
+
+[[8]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[8]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[8]]$owner$gravatar_id
+[1] ""
+
+[[8]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[8]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[8]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[8]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[8]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[8]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[8]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[8]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[8]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[8]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[8]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[8]]$owner$type
+[1] "Organization"
+
+[[8]]$owner$site_admin
+[1] FALSE
+
+
+[[8]]$html_url
+[1] "https://github.com/swiss-adminR/202212_slides"
+
+[[8]]$description
+NULL
+
+[[8]]$fork
+[1] FALSE
+
+[[8]]$url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides"
+
+[[8]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/forks"
+
+[[8]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/keys{/key_id}"
+
+[[8]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/collaborators{/collaborator}"
+
+[[8]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/teams"
+
+[[8]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/hooks"
+
+[[8]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/issues/events{/number}"
+
+[[8]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/events"
+
+[[8]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/assignees{/user}"
+
+[[8]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/branches{/branch}"
+
+[[8]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/tags"
+
+[[8]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/git/blobs{/sha}"
+
+[[8]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/git/tags{/sha}"
+
+[[8]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/git/refs{/sha}"
+
+[[8]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/git/trees{/sha}"
+
+[[8]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/statuses/{sha}"
+
+[[8]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/languages"
+
+[[8]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/stargazers"
+
+[[8]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/contributors"
+
+[[8]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/subscribers"
+
+[[8]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/subscription"
+
+[[8]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/commits{/sha}"
+
+[[8]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/git/commits{/sha}"
+
+[[8]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/comments{/number}"
+
+[[8]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/issues/comments{/number}"
+
+[[8]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/contents/{+path}"
+
+[[8]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/compare/{base}...{head}"
+
+[[8]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/merges"
+
+[[8]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/{archive_format}{/ref}"
+
+[[8]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/downloads"
+
+[[8]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/issues{/number}"
+
+[[8]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/pulls{/number}"
+
+[[8]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/milestones{/number}"
+
+[[8]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/notifications{?since,all,participating}"
+
+[[8]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/labels{/name}"
+
+[[8]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/releases{/id}"
+
+[[8]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/202212_slides/deployments"
+
+[[8]]$created_at
+[1] "2022-12-29T18:26:35Z"
+
+[[8]]$updated_at
+[1] "2023-01-03T19:04:07Z"
+
+[[8]]$pushed_at
+[1] "2023-01-03T19:37:00Z"
+
+[[8]]$git_url
+[1] "git://github.com/swiss-adminR/202212_slides.git"
+
+[[8]]$ssh_url
+[1] "git@github.com:swiss-adminR/202212_slides.git"
+
+[[8]]$clone_url
+[1] "https://github.com/swiss-adminR/202212_slides.git"
+
+[[8]]$svn_url
+[1] "https://github.com/swiss-adminR/202212_slides"
+
+[[8]]$homepage
+NULL
+
+[[8]]$size
+[1] 300497
+
+[[8]]$stargazers_count
+[1] 1
+
+[[8]]$watchers_count
+[1] 1
+
+[[8]]$language
+[1] "R"
+
+[[8]]$has_issues
+[1] TRUE
+
+[[8]]$has_projects
+[1] TRUE
+
+[[8]]$has_downloads
+[1] TRUE
+
+[[8]]$has_wiki
+[1] TRUE
+
+[[8]]$has_pages
+[1] FALSE
+
+[[8]]$has_discussions
+[1] FALSE
+
+[[8]]$forks_count
+[1] 0
+
+[[8]]$mirror_url
+NULL
+
+[[8]]$archived
+[1] FALSE
+
+[[8]]$disabled
+[1] FALSE
+
+[[8]]$open_issues_count
+[1] 0
+
+[[8]]$license
+NULL
+
+[[8]]$allow_forking
+[1] TRUE
+
+[[8]]$is_template
+[1] FALSE
+
+[[8]]$web_commit_signoff_required
+[1] FALSE
+
+[[8]]$topics
+list()
+
+[[8]]$visibility
+[1] "public"
+
+[[8]]$forks
+[1] 0
+
+[[8]]$open_issues
+[1] 0
+
+[[8]]$watchers
+[1] 1
+
+[[8]]$default_branch
+[1] "main"
+
+[[8]]$permissions
+[[8]]$permissions$admin
+[1] FALSE
+
+[[8]]$permissions$maintain
+[1] FALSE
+
+[[8]]$permissions$push
+[1] FALSE
+
+[[8]]$permissions$triage
+[1] FALSE
+
+[[8]]$permissions$pull
+[1] TRUE
+
+
+
+[[9]]
+[[9]]$id
+[1] 645683888
+
+[[9]]$node_id
+[1] "R_kgDOJnxasA"
+
+[[9]]$name
+[1] "202305_slides"
+
+[[9]]$full_name
+[1] "swiss-adminR/202305_slides"
+
+[[9]]$private
+[1] FALSE
+
+[[9]]$owner
+[[9]]$owner$login
+[1] "swiss-adminR"
+
+[[9]]$owner$id
+[1] 43069200
+
+[[9]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[9]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[9]]$owner$gravatar_id
+[1] ""
+
+[[9]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[9]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[9]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[9]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[9]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[9]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[9]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[9]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[9]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[9]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[9]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[9]]$owner$type
+[1] "Organization"
+
+[[9]]$owner$site_admin
+[1] FALSE
+
+
+[[9]]$html_url
+[1] "https://github.com/swiss-adminR/202305_slides"
+
+[[9]]$description
+[1] "Slides of the spring meetup 2023 hosted by the Digital Society Initiative and Statistical Office Canton of Zurich"
+
+[[9]]$fork
+[1] FALSE
+
+[[9]]$url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides"
+
+[[9]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/forks"
+
+[[9]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/keys{/key_id}"
+
+[[9]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/collaborators{/collaborator}"
+
+[[9]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/teams"
+
+[[9]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/hooks"
+
+[[9]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/issues/events{/number}"
+
+[[9]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/events"
+
+[[9]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/assignees{/user}"
+
+[[9]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/branches{/branch}"
+
+[[9]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/tags"
+
+[[9]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/git/blobs{/sha}"
+
+[[9]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/git/tags{/sha}"
+
+[[9]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/git/refs{/sha}"
+
+[[9]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/git/trees{/sha}"
+
+[[9]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/statuses/{sha}"
+
+[[9]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/languages"
+
+[[9]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/stargazers"
+
+[[9]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/contributors"
+
+[[9]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/subscribers"
+
+[[9]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/subscription"
+
+[[9]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/commits{/sha}"
+
+[[9]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/git/commits{/sha}"
+
+[[9]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/comments{/number}"
+
+[[9]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/issues/comments{/number}"
+
+[[9]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/contents/{+path}"
+
+[[9]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/compare/{base}...{head}"
+
+[[9]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/merges"
+
+[[9]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/{archive_format}{/ref}"
+
+[[9]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/downloads"
+
+[[9]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/issues{/number}"
+
+[[9]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/pulls{/number}"
+
+[[9]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/milestones{/number}"
+
+[[9]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/notifications{?since,all,participating}"
+
+[[9]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/labels{/name}"
+
+[[9]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/releases{/id}"
+
+[[9]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/202305_slides/deployments"
+
+[[9]]$created_at
+[1] "2023-05-26T07:48:44Z"
+
+[[9]]$updated_at
+[1] "2023-05-26T07:48:44Z"
+
+[[9]]$pushed_at
+[1] "2023-05-30T06:23:24Z"
+
+[[9]]$git_url
+[1] "git://github.com/swiss-adminR/202305_slides.git"
+
+[[9]]$ssh_url
+[1] "git@github.com:swiss-adminR/202305_slides.git"
+
+[[9]]$clone_url
+[1] "https://github.com/swiss-adminR/202305_slides.git"
+
+[[9]]$svn_url
+[1] "https://github.com/swiss-adminR/202305_slides"
+
+[[9]]$homepage
+NULL
+
+[[9]]$size
+[1] 3183
+
+[[9]]$stargazers_count
+[1] 0
+
+[[9]]$watchers_count
+[1] 0
+
+[[9]]$language
+NULL
+
+[[9]]$has_issues
+[1] TRUE
+
+[[9]]$has_projects
+[1] TRUE
+
+[[9]]$has_downloads
+[1] TRUE
+
+[[9]]$has_wiki
+[1] TRUE
+
+[[9]]$has_pages
+[1] FALSE
+
+[[9]]$has_discussions
+[1] FALSE
+
+[[9]]$forks_count
+[1] 0
+
+[[9]]$mirror_url
+NULL
+
+[[9]]$archived
+[1] FALSE
+
+[[9]]$disabled
+[1] FALSE
+
+[[9]]$open_issues_count
+[1] 0
+
+[[9]]$license
+NULL
+
+[[9]]$allow_forking
+[1] TRUE
+
+[[9]]$is_template
+[1] FALSE
+
+[[9]]$web_commit_signoff_required
+[1] FALSE
+
+[[9]]$topics
+list()
+
+[[9]]$visibility
+[1] "public"
+
+[[9]]$forks
+[1] 0
+
+[[9]]$open_issues
+[1] 0
+
+[[9]]$watchers
+[1] 0
+
+[[9]]$default_branch
+[1] "main"
+
+[[9]]$permissions
+[[9]]$permissions$admin
+[1] FALSE
+
+[[9]]$permissions$maintain
+[1] FALSE
+
+[[9]]$permissions$push
+[1] FALSE
+
+[[9]]$permissions$triage
+[1] FALSE
+
+[[9]]$permissions$pull
+[1] TRUE
+
+
+
+[[10]]
+[[10]]$id
+[1] 731945372
+
+[[10]]$node_id
+[1] "R_kgDOK6CZnA"
+
+[[10]]$name
+[1] "202311_slides"
+
+[[10]]$full_name
+[1] "swiss-adminR/202311_slides"
+
+[[10]]$private
+[1] FALSE
+
+[[10]]$owner
+[[10]]$owner$login
+[1] "swiss-adminR"
+
+[[10]]$owner$id
+[1] 43069200
+
+[[10]]$owner$node_id
+[1] "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+
+[[10]]$owner$avatar_url
+[1] "https://avatars.githubusercontent.com/u/43069200?v=4"
+
+[[10]]$owner$gravatar_id
+[1] ""
+
+[[10]]$owner$url
+[1] "https://api.github.com/users/swiss-adminR"
+
+[[10]]$owner$html_url
+[1] "https://github.com/swiss-adminR"
+
+[[10]]$owner$followers_url
+[1] "https://api.github.com/users/swiss-adminR/followers"
+
+[[10]]$owner$following_url
+[1] "https://api.github.com/users/swiss-adminR/following{/other_user}"
+
+[[10]]$owner$gists_url
+[1] "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+
+[[10]]$owner$starred_url
+[1] "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+
+[[10]]$owner$subscriptions_url
+[1] "https://api.github.com/users/swiss-adminR/subscriptions"
+
+[[10]]$owner$organizations_url
+[1] "https://api.github.com/users/swiss-adminR/orgs"
+
+[[10]]$owner$repos_url
+[1] "https://api.github.com/users/swiss-adminR/repos"
+
+[[10]]$owner$events_url
+[1] "https://api.github.com/users/swiss-adminR/events{/privacy}"
+
+[[10]]$owner$received_events_url
+[1] "https://api.github.com/users/swiss-adminR/received_events"
+
+[[10]]$owner$type
+[1] "Organization"
+
+[[10]]$owner$site_admin
+[1] FALSE
+
+
+[[10]]$html_url
+[1] "https://github.com/swiss-adminR/202311_slides"
+
+[[10]]$description
+[1] "Slides of the autumn meetup 2023 hosted by the Swiss National Bank"
+
+[[10]]$fork
+[1] FALSE
+
+[[10]]$url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides"
+
+[[10]]$forks_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/forks"
+
+[[10]]$keys_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/keys{/key_id}"
+
+[[10]]$collaborators_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/collaborators{/collaborator}"
+
+[[10]]$teams_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/teams"
+
+[[10]]$hooks_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/hooks"
+
+[[10]]$issue_events_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/issues/events{/number}"
+
+[[10]]$events_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/events"
+
+[[10]]$assignees_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/assignees{/user}"
+
+[[10]]$branches_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/branches{/branch}"
+
+[[10]]$tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/tags"
+
+[[10]]$blobs_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/git/blobs{/sha}"
+
+[[10]]$git_tags_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/git/tags{/sha}"
+
+[[10]]$git_refs_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/git/refs{/sha}"
+
+[[10]]$trees_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/git/trees{/sha}"
+
+[[10]]$statuses_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/statuses/{sha}"
+
+[[10]]$languages_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/languages"
+
+[[10]]$stargazers_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/stargazers"
+
+[[10]]$contributors_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/contributors"
+
+[[10]]$subscribers_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/subscribers"
+
+[[10]]$subscription_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/subscription"
+
+[[10]]$commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/commits{/sha}"
+
+[[10]]$git_commits_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/git/commits{/sha}"
+
+[[10]]$comments_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/comments{/number}"
+
+[[10]]$issue_comment_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/issues/comments{/number}"
+
+[[10]]$contents_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/contents/{+path}"
+
+[[10]]$compare_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/compare/{base}...{head}"
+
+[[10]]$merges_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/merges"
+
+[[10]]$archive_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/{archive_format}{/ref}"
+
+[[10]]$downloads_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/downloads"
+
+[[10]]$issues_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/issues{/number}"
+
+[[10]]$pulls_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/pulls{/number}"
+
+[[10]]$milestones_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/milestones{/number}"
+
+[[10]]$notifications_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/notifications{?since,all,participating}"
+
+[[10]]$labels_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/labels{/name}"
+
+[[10]]$releases_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/releases{/id}"
+
+[[10]]$deployments_url
+[1] "https://api.github.com/repos/swiss-adminR/202311_slides/deployments"
+
+[[10]]$created_at
+[1] "2023-12-15T08:58:59Z"
+
+[[10]]$updated_at
+[1] "2023-12-15T08:58:59Z"
+
+[[10]]$pushed_at
+[1] "2023-12-15T13:31:05Z"
+
+[[10]]$git_url
+[1] "git://github.com/swiss-adminR/202311_slides.git"
+
+[[10]]$ssh_url
+[1] "git@github.com:swiss-adminR/202311_slides.git"
+
+[[10]]$clone_url
+[1] "https://github.com/swiss-adminR/202311_slides.git"
+
+[[10]]$svn_url
+[1] "https://github.com/swiss-adminR/202311_slides"
+
+[[10]]$homepage
+NULL
+
+[[10]]$size
+[1] 2136
+
+[[10]]$stargazers_count
+[1] 0
+
+[[10]]$watchers_count
+[1] 0
+
+[[10]]$language
+NULL
+
+[[10]]$has_issues
+[1] TRUE
+
+[[10]]$has_projects
+[1] TRUE
+
+[[10]]$has_downloads
+[1] TRUE
+
+[[10]]$has_wiki
+[1] TRUE
+
+[[10]]$has_pages
+[1] FALSE
+
+[[10]]$has_discussions
+[1] FALSE
+
+[[10]]$forks_count
+[1] 0
+
+[[10]]$mirror_url
+NULL
+
+[[10]]$archived
+[1] FALSE
+
+[[10]]$disabled
+[1] FALSE
+
+[[10]]$open_issues_count
+[1] 0
+
+[[10]]$license
+NULL
+
+[[10]]$allow_forking
+[1] TRUE
+
+[[10]]$is_template
+[1] FALSE
+
+[[10]]$web_commit_signoff_required
+[1] FALSE
+
+[[10]]$topics
+list()
+
+[[10]]$visibility
+[1] "public"
+
+[[10]]$forks
+[1] 0
+
+[[10]]$open_issues
+[1] 0
+
+[[10]]$watchers
+[1] 0
+
+[[10]]$default_branch
+[1] "main"
+
+[[10]]$permissions
+[[10]]$permissions$admin
+[1] FALSE
+
+[[10]]$permissions$maintain
+[1] FALSE
+
+[[10]]$permissions$push
+[1] FALSE
+
+[[10]]$permissions$triage
+[1] FALSE
+
+[[10]]$permissions$pull
+[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">str</span>(json_response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 10
  $ :List of 80
   ..$ id                         : int 149717368
   ..$ node_id                    : chr "MDEwOlJlcG9zaXRvcnkxNDk3MTczNjg="
@@ -1393,13 +4486,117 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   .. ..$ maintain: logi FALSE
   .. ..$ push    : logi FALSE
   .. ..$ triage  : logi FALSE
+  .. ..$ pull    : logi TRUE
+ $ :List of 80
+  ..$ id                         : int 731945372
+  ..$ node_id                    : chr "R_kgDOK6CZnA"
+  ..$ name                       : chr "202311_slides"
+  ..$ full_name                  : chr "swiss-adminR/202311_slides"
+  ..$ private                    : logi FALSE
+  ..$ owner                      :List of 18
+  .. ..$ login              : chr "swiss-adminR"
+  .. ..$ id                 : int 43069200
+  .. ..$ node_id            : chr "MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw"
+  .. ..$ avatar_url         : chr "https://avatars.githubusercontent.com/u/43069200?v=4"
+  .. ..$ gravatar_id        : chr ""
+  .. ..$ url                : chr "https://api.github.com/users/swiss-adminR"
+  .. ..$ html_url           : chr "https://github.com/swiss-adminR"
+  .. ..$ followers_url      : chr "https://api.github.com/users/swiss-adminR/followers"
+  .. ..$ following_url      : chr "https://api.github.com/users/swiss-adminR/following{/other_user}"
+  .. ..$ gists_url          : chr "https://api.github.com/users/swiss-adminR/gists{/gist_id}"
+  .. ..$ starred_url        : chr "https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}"
+  .. ..$ subscriptions_url  : chr "https://api.github.com/users/swiss-adminR/subscriptions"
+  .. ..$ organizations_url  : chr "https://api.github.com/users/swiss-adminR/orgs"
+  .. ..$ repos_url          : chr "https://api.github.com/users/swiss-adminR/repos"
+  .. ..$ events_url         : chr "https://api.github.com/users/swiss-adminR/events{/privacy}"
+  .. ..$ received_events_url: chr "https://api.github.com/users/swiss-adminR/received_events"
+  .. ..$ type               : chr "Organization"
+  .. ..$ site_admin         : logi FALSE
+  ..$ html_url                   : chr "https://github.com/swiss-adminR/202311_slides"
+  ..$ description                : chr "Slides of the autumn meetup 2023 hosted by the Swiss National Bank"
+  ..$ fork                       : logi FALSE
+  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/202311_slides"
+  ..$ forks_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/forks"
+  ..$ keys_url                   : chr "https://api.github.com/repos/swiss-adminR/202311_slides/keys{/key_id}"
+  ..$ collaborators_url          : chr "https://api.github.com/repos/swiss-adminR/202311_slides/collaborators{/collaborator}"
+  ..$ teams_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/teams"
+  ..$ hooks_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/hooks"
+  ..$ issue_events_url           : chr "https://api.github.com/repos/swiss-adminR/202311_slides/issues/events{/number}"
+  ..$ events_url                 : chr "https://api.github.com/repos/swiss-adminR/202311_slides/events"
+  ..$ assignees_url              : chr "https://api.github.com/repos/swiss-adminR/202311_slides/assignees{/user}"
+  ..$ branches_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/branches{/branch}"
+  ..$ tags_url                   : chr "https://api.github.com/repos/swiss-adminR/202311_slides/tags"
+  ..$ blobs_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/git/blobs{/sha}"
+  ..$ git_tags_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/git/tags{/sha}"
+  ..$ git_refs_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/git/refs{/sha}"
+  ..$ trees_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/git/trees{/sha}"
+  ..$ statuses_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/statuses/{sha}"
+  ..$ languages_url              : chr "https://api.github.com/repos/swiss-adminR/202311_slides/languages"
+  ..$ stargazers_url             : chr "https://api.github.com/repos/swiss-adminR/202311_slides/stargazers"
+  ..$ contributors_url           : chr "https://api.github.com/repos/swiss-adminR/202311_slides/contributors"
+  ..$ subscribers_url            : chr "https://api.github.com/repos/swiss-adminR/202311_slides/subscribers"
+  ..$ subscription_url           : chr "https://api.github.com/repos/swiss-adminR/202311_slides/subscription"
+  ..$ commits_url                : chr "https://api.github.com/repos/swiss-adminR/202311_slides/commits{/sha}"
+  ..$ git_commits_url            : chr "https://api.github.com/repos/swiss-adminR/202311_slides/git/commits{/sha}"
+  ..$ comments_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/comments{/number}"
+  ..$ issue_comment_url          : chr "https://api.github.com/repos/swiss-adminR/202311_slides/issues/comments{/number}"
+  ..$ contents_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/contents/{+path}"
+  ..$ compare_url                : chr "https://api.github.com/repos/swiss-adminR/202311_slides/compare/{base}...{head}"
+  ..$ merges_url                 : chr "https://api.github.com/repos/swiss-adminR/202311_slides/merges"
+  ..$ archive_url                : chr "https://api.github.com/repos/swiss-adminR/202311_slides/{archive_format}{/ref}"
+  ..$ downloads_url              : chr "https://api.github.com/repos/swiss-adminR/202311_slides/downloads"
+  ..$ issues_url                 : chr "https://api.github.com/repos/swiss-adminR/202311_slides/issues{/number}"
+  ..$ pulls_url                  : chr "https://api.github.com/repos/swiss-adminR/202311_slides/pulls{/number}"
+  ..$ milestones_url             : chr "https://api.github.com/repos/swiss-adminR/202311_slides/milestones{/number}"
+  ..$ notifications_url          : chr "https://api.github.com/repos/swiss-adminR/202311_slides/notifications{?since,all,participating}"
+  ..$ labels_url                 : chr "https://api.github.com/repos/swiss-adminR/202311_slides/labels{/name}"
+  ..$ releases_url               : chr "https://api.github.com/repos/swiss-adminR/202311_slides/releases{/id}"
+  ..$ deployments_url            : chr "https://api.github.com/repos/swiss-adminR/202311_slides/deployments"
+  ..$ created_at                 : chr "2023-12-15T08:58:59Z"
+  ..$ updated_at                 : chr "2023-12-15T08:58:59Z"
+  ..$ pushed_at                  : chr "2023-12-15T13:31:05Z"
+  ..$ git_url                    : chr "git://github.com/swiss-adminR/202311_slides.git"
+  ..$ ssh_url                    : chr "git@github.com:swiss-adminR/202311_slides.git"
+  ..$ clone_url                  : chr "https://github.com/swiss-adminR/202311_slides.git"
+  ..$ svn_url                    : chr "https://github.com/swiss-adminR/202311_slides"
+  ..$ homepage                   : NULL
+  ..$ size                       : int 2136
+  ..$ stargazers_count           : int 0
+  ..$ watchers_count             : int 0
+  ..$ language                   : NULL
+  ..$ has_issues                 : logi TRUE
+  ..$ has_projects               : logi TRUE
+  ..$ has_downloads              : logi TRUE
+  ..$ has_wiki                   : logi TRUE
+  ..$ has_pages                  : logi FALSE
+  ..$ has_discussions            : logi FALSE
+  ..$ forks_count                : int 0
+  ..$ mirror_url                 : NULL
+  ..$ archived                   : logi FALSE
+  ..$ disabled                   : logi FALSE
+  ..$ open_issues_count          : int 0
+  ..$ license                    : NULL
+  ..$ allow_forking              : logi TRUE
+  ..$ is_template                : logi FALSE
+  ..$ web_commit_signoff_required: logi FALSE
+  ..$ topics                     : list()
+  ..$ visibility                 : chr "public"
+  ..$ forks                      : int 0
+  ..$ open_issues                : int 0
+  ..$ watchers                   : int 0
+  ..$ default_branch             : chr "main"
+  ..$ permissions                :List of 5
+  .. ..$ admin   : logi FALSE
+  .. ..$ maintain: logi FALSE
+  .. ..$ push    : logi FALSE
+  .. ..$ triage  : logi FALSE
   .. ..$ pull    : logi TRUE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">str</span>(json_response,</span>
-<span id="cb9-2"><a href="#cb9-2"></a>    <span class="at">max.level =</span> <span class="dv">2</span>,</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    <span class="at">list.len =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">str</span>(json_response,</span>
+<span id="cb11-2"><a href="#cb11-2"></a>    <span class="at">max.level =</span> <span class="dv">2</span>,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="at">list.len =</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>List of 9
+<pre><code>List of 10
  $ :List of 80
   ..$ id                         : int 149717368
   ..$ node_id                    : chr "MDEwOlJlcG9zaXRvcnkxNDk3MTczNjg="
@@ -1409,8 +4606,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/201809_slides"
   ..$ description                : chr "Slides of our first Meetup, 20. September 2018 @ SECO"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/201809_slides"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 175794847
@@ -1421,8 +4616,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/201903_slides"
   ..$ description                : chr "Slides of the spring edition Meetup, 14. March 2019 @ KOF"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/201903_slides"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 209717910
@@ -1433,8 +4626,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/201909_slides"
   ..$ description                : chr "Slides of the autumn edition Meetup, 19. September 2019 @ Fribourg"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/201909_slides"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 352101485
@@ -1445,8 +4636,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/202103_slides"
   ..$ description                : chr "Slides of the spring edition Meetup, 18. March 2021 @ Zoom"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/202103_slides"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 387813191
@@ -1457,8 +4646,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/pkgs"
   ..$ description                : chr "A curated list of R packages created and used by Swiss public institutions"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/pkgs"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 499020163
@@ -1469,8 +4656,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/202205_slides"
   ..$ description                : chr "slides of the spring meetup 2022"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/202205_slides"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 576216609
@@ -1481,8 +4666,6 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/2022_12"
   ..$ description                : NULL
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/2022_12"
   .. [list output truncated]
  $ :List of 80
   ..$ id                         : int 583423235
@@ -1493,29 +4676,16 @@ x-github-request-id: 5FC0:1938:1B00EE5D:1B537F3D:6567ACE3</code></pre>
   ..$ owner                      :List of 18
   ..$ html_url                   : chr "https://github.com/swiss-adminR/202212_slides"
   ..$ description                : NULL
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/202212_slides"
   .. [list output truncated]
- $ :List of 80
-  ..$ id                         : int 645683888
-  ..$ node_id                    : chr "R_kgDOJnxasA"
-  ..$ name                       : chr "202305_slides"
-  ..$ full_name                  : chr "swiss-adminR/202305_slides"
-  ..$ private                    : logi FALSE
-  ..$ owner                      :List of 18
-  ..$ html_url                   : chr "https://github.com/swiss-adminR/202305_slides"
-  ..$ description                : chr "Slides of the spring meetup 2023 hosted by the Digital Society Initiative and Statistical Office Canton of Zurich"
-  ..$ fork                       : logi FALSE
-  ..$ url                        : chr "https://api.github.com/repos/swiss-adminR/202305_slides"
-  .. [list output truncated]</code></pre>
+  [list output truncated]</code></pre>
 </div>
 </div>
 </section>
 <section id="getting-the-names-of-the-repos" class="slide level2">
 <h2>Getting the names of the repos</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="do">## Extract the third element from each list element using sapply</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">sapply</span>(json_response, <span class="cf">function</span>(x) x[<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="do">## Extract the third element from each list element using sapply</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">sapply</span>(json_response, <span class="cf">function</span>(x) x[<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$name
 [1] "201809_slides"
@@ -1542,122 +4712,862 @@ $name
 [1] "202212_slides"
 
 $name
-[1] "202305_slides"</code></pre>
+[1] "202305_slides"
+
+$name
+[1] "202311_slides"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="do">## Extract the third element from each list element using purrr</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>purrr<span class="sc">::</span><span class="fu">map_chr</span>(json_response, <span class="sc">~</span> .[[<span class="dv">3</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="do">## Extract the third element from each list element using purrr</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="do">## map_chr() applies a function to each element in a list and returns</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="do">## type character</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>purrr<span class="sc">::</span><span class="fu">map_chr</span>(json_response, <span class="sc">~</span> .[[<span class="dv">3</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "201809_slides" "201903_slides" "201909_slides" "202103_slides"
-[5] "pkgs"          "202205_slides" "2022_12"       "202212_slides"
-[9] "202305_slides"</code></pre>
+<pre><code> [1] "201809_slides" "201903_slides" "201909_slides" "202103_slides"
+ [5] "pkgs"          "202205_slides" "2022_12"       "202212_slides"
+ [9] "202305_slides" "202311_slides"</code></pre>
 </div>
 </div>
 </section>
 <section id="parsing-into-a-dataframe" class="slide level2">
 <h2>Parsing into a dataframe</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="do">## Convert JSON data to a data frame</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a>json_df <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(json_response))</span>
-<span id="cb15-3"><a href="#cb15-3"></a></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="do">## How many repos?</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a><span class="fu">length</span>(<span class="fu">unlist</span>(json_df<span class="sc">$</span>url))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="do">## Convert JSON data to a data frame</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>json_df <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(jsonlite<span class="sc">::</span><span class="fu">toJSON</span>(json_response))</span>
+<span id="cb17-3"><a href="#cb17-3"></a>json_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 9</code></pre>
+<pre><code>          id                          node_id          name
+1  149717368 MDEwOlJlcG9zaXRvcnkxNDk3MTczNjg= 201809_slides
+2  175794847 MDEwOlJlcG9zaXRvcnkxNzU3OTQ4NDc= 201903_slides
+3  209717910 MDEwOlJlcG9zaXRvcnkyMDk3MTc5MTA= 201909_slides
+4  352101485 MDEwOlJlcG9zaXRvcnkzNTIxMDE0ODU= 202103_slides
+5  387813191 MDEwOlJlcG9zaXRvcnkzODc4MTMxOTE=          pkgs
+6  499020163                     R_kgDOHb5xgw 202205_slides
+7  576216609                     R_kgDOIlheIQ       2022_12
+8  583423235                     R_kgDOIsZVAw 202212_slides
+9  645683888                     R_kgDOJnxasA 202305_slides
+10 731945372                     R_kgDOK6CZnA 202311_slides
+                    full_name private  owner.login owner.id
+1  swiss-adminR/201809_slides   FALSE swiss-adminR 43069200
+2  swiss-adminR/201903_slides   FALSE swiss-adminR 43069200
+3  swiss-adminR/201909_slides   FALSE swiss-adminR 43069200
+4  swiss-adminR/202103_slides   FALSE swiss-adminR 43069200
+5           swiss-adminR/pkgs   FALSE swiss-adminR 43069200
+6  swiss-adminR/202205_slides   FALSE swiss-adminR 43069200
+7        swiss-adminR/2022_12   FALSE swiss-adminR 43069200
+8  swiss-adminR/202212_slides   FALSE swiss-adminR 43069200
+9  swiss-adminR/202305_slides   FALSE swiss-adminR 43069200
+10 swiss-adminR/202311_slides   FALSE swiss-adminR 43069200
+                      owner.node_id
+1  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+2  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+3  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+4  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+5  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+6  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+7  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+8  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+9  MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+10 MDEyOk9yZ2FuaXphdGlvbjQzMDY5MjAw
+                                       owner.avatar_url owner.gravatar_id
+1  https://avatars.githubusercontent.com/u/43069200?v=4                  
+2  https://avatars.githubusercontent.com/u/43069200?v=4                  
+3  https://avatars.githubusercontent.com/u/43069200?v=4                  
+4  https://avatars.githubusercontent.com/u/43069200?v=4                  
+5  https://avatars.githubusercontent.com/u/43069200?v=4                  
+6  https://avatars.githubusercontent.com/u/43069200?v=4                  
+7  https://avatars.githubusercontent.com/u/43069200?v=4                  
+8  https://avatars.githubusercontent.com/u/43069200?v=4                  
+9  https://avatars.githubusercontent.com/u/43069200?v=4                  
+10 https://avatars.githubusercontent.com/u/43069200?v=4                  
+                                   owner.url                  owner.html_url
+1  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+2  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+3  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+4  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+5  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+6  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+7  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+8  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+9  https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+10 https://api.github.com/users/swiss-adminR https://github.com/swiss-adminR
+                                   owner.followers_url
+1  https://api.github.com/users/swiss-adminR/followers
+2  https://api.github.com/users/swiss-adminR/followers
+3  https://api.github.com/users/swiss-adminR/followers
+4  https://api.github.com/users/swiss-adminR/followers
+5  https://api.github.com/users/swiss-adminR/followers
+6  https://api.github.com/users/swiss-adminR/followers
+7  https://api.github.com/users/swiss-adminR/followers
+8  https://api.github.com/users/swiss-adminR/followers
+9  https://api.github.com/users/swiss-adminR/followers
+10 https://api.github.com/users/swiss-adminR/followers
+                                                owner.following_url
+1  https://api.github.com/users/swiss-adminR/following{/other_user}
+2  https://api.github.com/users/swiss-adminR/following{/other_user}
+3  https://api.github.com/users/swiss-adminR/following{/other_user}
+4  https://api.github.com/users/swiss-adminR/following{/other_user}
+5  https://api.github.com/users/swiss-adminR/following{/other_user}
+6  https://api.github.com/users/swiss-adminR/following{/other_user}
+7  https://api.github.com/users/swiss-adminR/following{/other_user}
+8  https://api.github.com/users/swiss-adminR/following{/other_user}
+9  https://api.github.com/users/swiss-adminR/following{/other_user}
+10 https://api.github.com/users/swiss-adminR/following{/other_user}
+                                             owner.gists_url
+1  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+2  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+3  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+4  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+5  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+6  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+7  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+8  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+9  https://api.github.com/users/swiss-adminR/gists{/gist_id}
+10 https://api.github.com/users/swiss-adminR/gists{/gist_id}
+                                                  owner.starred_url
+1  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+2  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+3  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+4  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+5  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+6  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+7  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+8  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+9  https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+10 https://api.github.com/users/swiss-adminR/starred{/owner}{/repo}
+                                   owner.subscriptions_url
+1  https://api.github.com/users/swiss-adminR/subscriptions
+2  https://api.github.com/users/swiss-adminR/subscriptions
+3  https://api.github.com/users/swiss-adminR/subscriptions
+4  https://api.github.com/users/swiss-adminR/subscriptions
+5  https://api.github.com/users/swiss-adminR/subscriptions
+6  https://api.github.com/users/swiss-adminR/subscriptions
+7  https://api.github.com/users/swiss-adminR/subscriptions
+8  https://api.github.com/users/swiss-adminR/subscriptions
+9  https://api.github.com/users/swiss-adminR/subscriptions
+10 https://api.github.com/users/swiss-adminR/subscriptions
+                          owner.organizations_url
+1  https://api.github.com/users/swiss-adminR/orgs
+2  https://api.github.com/users/swiss-adminR/orgs
+3  https://api.github.com/users/swiss-adminR/orgs
+4  https://api.github.com/users/swiss-adminR/orgs
+5  https://api.github.com/users/swiss-adminR/orgs
+6  https://api.github.com/users/swiss-adminR/orgs
+7  https://api.github.com/users/swiss-adminR/orgs
+8  https://api.github.com/users/swiss-adminR/orgs
+9  https://api.github.com/users/swiss-adminR/orgs
+10 https://api.github.com/users/swiss-adminR/orgs
+                                   owner.repos_url
+1  https://api.github.com/users/swiss-adminR/repos
+2  https://api.github.com/users/swiss-adminR/repos
+3  https://api.github.com/users/swiss-adminR/repos
+4  https://api.github.com/users/swiss-adminR/repos
+5  https://api.github.com/users/swiss-adminR/repos
+6  https://api.github.com/users/swiss-adminR/repos
+7  https://api.github.com/users/swiss-adminR/repos
+8  https://api.github.com/users/swiss-adminR/repos
+9  https://api.github.com/users/swiss-adminR/repos
+10 https://api.github.com/users/swiss-adminR/repos
+                                             owner.events_url
+1  https://api.github.com/users/swiss-adminR/events{/privacy}
+2  https://api.github.com/users/swiss-adminR/events{/privacy}
+3  https://api.github.com/users/swiss-adminR/events{/privacy}
+4  https://api.github.com/users/swiss-adminR/events{/privacy}
+5  https://api.github.com/users/swiss-adminR/events{/privacy}
+6  https://api.github.com/users/swiss-adminR/events{/privacy}
+7  https://api.github.com/users/swiss-adminR/events{/privacy}
+8  https://api.github.com/users/swiss-adminR/events{/privacy}
+9  https://api.github.com/users/swiss-adminR/events{/privacy}
+10 https://api.github.com/users/swiss-adminR/events{/privacy}
+                                   owner.received_events_url   owner.type
+1  https://api.github.com/users/swiss-adminR/received_events Organization
+2  https://api.github.com/users/swiss-adminR/received_events Organization
+3  https://api.github.com/users/swiss-adminR/received_events Organization
+4  https://api.github.com/users/swiss-adminR/received_events Organization
+5  https://api.github.com/users/swiss-adminR/received_events Organization
+6  https://api.github.com/users/swiss-adminR/received_events Organization
+7  https://api.github.com/users/swiss-adminR/received_events Organization
+8  https://api.github.com/users/swiss-adminR/received_events Organization
+9  https://api.github.com/users/swiss-adminR/received_events Organization
+10 https://api.github.com/users/swiss-adminR/received_events Organization
+   owner.site_admin                                      html_url
+1             FALSE https://github.com/swiss-adminR/201809_slides
+2             FALSE https://github.com/swiss-adminR/201903_slides
+3             FALSE https://github.com/swiss-adminR/201909_slides
+4             FALSE https://github.com/swiss-adminR/202103_slides
+5             FALSE          https://github.com/swiss-adminR/pkgs
+6             FALSE https://github.com/swiss-adminR/202205_slides
+7             FALSE       https://github.com/swiss-adminR/2022_12
+8             FALSE https://github.com/swiss-adminR/202212_slides
+9             FALSE https://github.com/swiss-adminR/202305_slides
+10            FALSE https://github.com/swiss-adminR/202311_slides
+                                                                                                         description
+1                                                              Slides of our first Meetup, 20. September 2018 @ SECO
+2                                                          Slides of the spring edition Meetup, 14. March 2019 @ KOF
+3                                                 Slides of the autumn edition Meetup, 19. September 2019 @ Fribourg
+4                                                         Slides of the spring edition Meetup, 18. March 2021 @ Zoom
+5                                         A curated list of R packages created and used by Swiss public institutions
+6                                                                                   slides of the spring meetup 2022
+7                                                                                                               NULL
+8                                                                                                               NULL
+9  Slides of the spring meetup 2023 hosted by the Digital Society Initiative and Statistical Office Canton of Zurich
+10                                                Slides of the autumn meetup 2023 hosted by the Swiss National Bank
+    fork                                                     url
+1  FALSE https://api.github.com/repos/swiss-adminR/201809_slides
+2  FALSE https://api.github.com/repos/swiss-adminR/201903_slides
+3  FALSE https://api.github.com/repos/swiss-adminR/201909_slides
+4  FALSE https://api.github.com/repos/swiss-adminR/202103_slides
+5  FALSE          https://api.github.com/repos/swiss-adminR/pkgs
+6  FALSE https://api.github.com/repos/swiss-adminR/202205_slides
+7  FALSE       https://api.github.com/repos/swiss-adminR/2022_12
+8  FALSE https://api.github.com/repos/swiss-adminR/202212_slides
+9  FALSE https://api.github.com/repos/swiss-adminR/202305_slides
+10 FALSE https://api.github.com/repos/swiss-adminR/202311_slides
+                                                       forks_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/forks
+2  https://api.github.com/repos/swiss-adminR/201903_slides/forks
+3  https://api.github.com/repos/swiss-adminR/201909_slides/forks
+4  https://api.github.com/repos/swiss-adminR/202103_slides/forks
+5           https://api.github.com/repos/swiss-adminR/pkgs/forks
+6  https://api.github.com/repos/swiss-adminR/202205_slides/forks
+7        https://api.github.com/repos/swiss-adminR/2022_12/forks
+8  https://api.github.com/repos/swiss-adminR/202212_slides/forks
+9  https://api.github.com/repos/swiss-adminR/202305_slides/forks
+10 https://api.github.com/repos/swiss-adminR/202311_slides/forks
+                                                                keys_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/keys{/key_id}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/keys{/key_id}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/keys{/key_id}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/keys{/key_id}
+5           https://api.github.com/repos/swiss-adminR/pkgs/keys{/key_id}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/keys{/key_id}
+7        https://api.github.com/repos/swiss-adminR/2022_12/keys{/key_id}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/keys{/key_id}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/keys{/key_id}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/keys{/key_id}
+                                                                      collaborators_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/collaborators{/collaborator}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/collaborators{/collaborator}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/collaborators{/collaborator}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/collaborators{/collaborator}
+5           https://api.github.com/repos/swiss-adminR/pkgs/collaborators{/collaborator}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/collaborators{/collaborator}
+7        https://api.github.com/repos/swiss-adminR/2022_12/collaborators{/collaborator}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/collaborators{/collaborator}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/collaborators{/collaborator}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/collaborators{/collaborator}
+                                                       teams_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/teams
+2  https://api.github.com/repos/swiss-adminR/201903_slides/teams
+3  https://api.github.com/repos/swiss-adminR/201909_slides/teams
+4  https://api.github.com/repos/swiss-adminR/202103_slides/teams
+5           https://api.github.com/repos/swiss-adminR/pkgs/teams
+6  https://api.github.com/repos/swiss-adminR/202205_slides/teams
+7        https://api.github.com/repos/swiss-adminR/2022_12/teams
+8  https://api.github.com/repos/swiss-adminR/202212_slides/teams
+9  https://api.github.com/repos/swiss-adminR/202305_slides/teams
+10 https://api.github.com/repos/swiss-adminR/202311_slides/teams
+                                                       hooks_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/hooks
+2  https://api.github.com/repos/swiss-adminR/201903_slides/hooks
+3  https://api.github.com/repos/swiss-adminR/201909_slides/hooks
+4  https://api.github.com/repos/swiss-adminR/202103_slides/hooks
+5           https://api.github.com/repos/swiss-adminR/pkgs/hooks
+6  https://api.github.com/repos/swiss-adminR/202205_slides/hooks
+7        https://api.github.com/repos/swiss-adminR/2022_12/hooks
+8  https://api.github.com/repos/swiss-adminR/202212_slides/hooks
+9  https://api.github.com/repos/swiss-adminR/202305_slides/hooks
+10 https://api.github.com/repos/swiss-adminR/202311_slides/hooks
+                                                                 issue_events_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/issues/events{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/issues/events{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/issues/events{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/issues/events{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/issues/events{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/issues/events{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/issues/events{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/issues/events{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/issues/events{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/issues/events{/number}
+                                                       events_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/events
+2  https://api.github.com/repos/swiss-adminR/201903_slides/events
+3  https://api.github.com/repos/swiss-adminR/201909_slides/events
+4  https://api.github.com/repos/swiss-adminR/202103_slides/events
+5           https://api.github.com/repos/swiss-adminR/pkgs/events
+6  https://api.github.com/repos/swiss-adminR/202205_slides/events
+7        https://api.github.com/repos/swiss-adminR/2022_12/events
+8  https://api.github.com/repos/swiss-adminR/202212_slides/events
+9  https://api.github.com/repos/swiss-adminR/202305_slides/events
+10 https://api.github.com/repos/swiss-adminR/202311_slides/events
+                                                              assignees_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/assignees{/user}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/assignees{/user}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/assignees{/user}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/assignees{/user}
+5           https://api.github.com/repos/swiss-adminR/pkgs/assignees{/user}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/assignees{/user}
+7        https://api.github.com/repos/swiss-adminR/2022_12/assignees{/user}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/assignees{/user}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/assignees{/user}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/assignees{/user}
+                                                                branches_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/branches{/branch}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/branches{/branch}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/branches{/branch}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/branches{/branch}
+5           https://api.github.com/repos/swiss-adminR/pkgs/branches{/branch}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/branches{/branch}
+7        https://api.github.com/repos/swiss-adminR/2022_12/branches{/branch}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/branches{/branch}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/branches{/branch}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/branches{/branch}
+                                                       tags_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/tags
+2  https://api.github.com/repos/swiss-adminR/201903_slides/tags
+3  https://api.github.com/repos/swiss-adminR/201909_slides/tags
+4  https://api.github.com/repos/swiss-adminR/202103_slides/tags
+5           https://api.github.com/repos/swiss-adminR/pkgs/tags
+6  https://api.github.com/repos/swiss-adminR/202205_slides/tags
+7        https://api.github.com/repos/swiss-adminR/2022_12/tags
+8  https://api.github.com/repos/swiss-adminR/202212_slides/tags
+9  https://api.github.com/repos/swiss-adminR/202305_slides/tags
+10 https://api.github.com/repos/swiss-adminR/202311_slides/tags
+                                                                 blobs_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/git/blobs{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/git/blobs{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/git/blobs{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/git/blobs{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/git/blobs{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/git/blobs{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/git/blobs{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/git/blobs{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/git/blobs{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/git/blobs{/sha}
+                                                             git_tags_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/git/tags{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/git/tags{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/git/tags{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/git/tags{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/git/tags{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/git/tags{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/git/tags{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/git/tags{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/git/tags{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/git/tags{/sha}
+                                                             git_refs_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/git/refs{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/git/refs{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/git/refs{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/git/refs{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/git/refs{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/git/refs{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/git/refs{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/git/refs{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/git/refs{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/git/refs{/sha}
+                                                                 trees_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/git/trees{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/git/trees{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/git/trees{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/git/trees{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/git/trees{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/git/trees{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/git/trees{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/git/trees{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/git/trees{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/git/trees{/sha}
+                                                             statuses_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/statuses/{sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/statuses/{sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/statuses/{sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/statuses/{sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/statuses/{sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/statuses/{sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/statuses/{sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/statuses/{sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/statuses/{sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/statuses/{sha}
+                                                       languages_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/languages
+2  https://api.github.com/repos/swiss-adminR/201903_slides/languages
+3  https://api.github.com/repos/swiss-adminR/201909_slides/languages
+4  https://api.github.com/repos/swiss-adminR/202103_slides/languages
+5           https://api.github.com/repos/swiss-adminR/pkgs/languages
+6  https://api.github.com/repos/swiss-adminR/202205_slides/languages
+7        https://api.github.com/repos/swiss-adminR/2022_12/languages
+8  https://api.github.com/repos/swiss-adminR/202212_slides/languages
+9  https://api.github.com/repos/swiss-adminR/202305_slides/languages
+10 https://api.github.com/repos/swiss-adminR/202311_slides/languages
+                                                       stargazers_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/stargazers
+2  https://api.github.com/repos/swiss-adminR/201903_slides/stargazers
+3  https://api.github.com/repos/swiss-adminR/201909_slides/stargazers
+4  https://api.github.com/repos/swiss-adminR/202103_slides/stargazers
+5           https://api.github.com/repos/swiss-adminR/pkgs/stargazers
+6  https://api.github.com/repos/swiss-adminR/202205_slides/stargazers
+7        https://api.github.com/repos/swiss-adminR/2022_12/stargazers
+8  https://api.github.com/repos/swiss-adminR/202212_slides/stargazers
+9  https://api.github.com/repos/swiss-adminR/202305_slides/stargazers
+10 https://api.github.com/repos/swiss-adminR/202311_slides/stargazers
+                                                       contributors_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/contributors
+2  https://api.github.com/repos/swiss-adminR/201903_slides/contributors
+3  https://api.github.com/repos/swiss-adminR/201909_slides/contributors
+4  https://api.github.com/repos/swiss-adminR/202103_slides/contributors
+5           https://api.github.com/repos/swiss-adminR/pkgs/contributors
+6  https://api.github.com/repos/swiss-adminR/202205_slides/contributors
+7        https://api.github.com/repos/swiss-adminR/2022_12/contributors
+8  https://api.github.com/repos/swiss-adminR/202212_slides/contributors
+9  https://api.github.com/repos/swiss-adminR/202305_slides/contributors
+10 https://api.github.com/repos/swiss-adminR/202311_slides/contributors
+                                                       subscribers_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/subscribers
+2  https://api.github.com/repos/swiss-adminR/201903_slides/subscribers
+3  https://api.github.com/repos/swiss-adminR/201909_slides/subscribers
+4  https://api.github.com/repos/swiss-adminR/202103_slides/subscribers
+5           https://api.github.com/repos/swiss-adminR/pkgs/subscribers
+6  https://api.github.com/repos/swiss-adminR/202205_slides/subscribers
+7        https://api.github.com/repos/swiss-adminR/2022_12/subscribers
+8  https://api.github.com/repos/swiss-adminR/202212_slides/subscribers
+9  https://api.github.com/repos/swiss-adminR/202305_slides/subscribers
+10 https://api.github.com/repos/swiss-adminR/202311_slides/subscribers
+                                                       subscription_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/subscription
+2  https://api.github.com/repos/swiss-adminR/201903_slides/subscription
+3  https://api.github.com/repos/swiss-adminR/201909_slides/subscription
+4  https://api.github.com/repos/swiss-adminR/202103_slides/subscription
+5           https://api.github.com/repos/swiss-adminR/pkgs/subscription
+6  https://api.github.com/repos/swiss-adminR/202205_slides/subscription
+7        https://api.github.com/repos/swiss-adminR/2022_12/subscription
+8  https://api.github.com/repos/swiss-adminR/202212_slides/subscription
+9  https://api.github.com/repos/swiss-adminR/202305_slides/subscription
+10 https://api.github.com/repos/swiss-adminR/202311_slides/subscription
+                                                             commits_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/commits{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/commits{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/commits{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/commits{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/commits{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/commits{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/commits{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/commits{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/commits{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/commits{/sha}
+                                                             git_commits_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/git/commits{/sha}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/git/commits{/sha}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/git/commits{/sha}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/git/commits{/sha}
+5           https://api.github.com/repos/swiss-adminR/pkgs/git/commits{/sha}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/git/commits{/sha}
+7        https://api.github.com/repos/swiss-adminR/2022_12/git/commits{/sha}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/git/commits{/sha}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/git/commits{/sha}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/git/commits{/sha}
+                                                                comments_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/comments{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/comments{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/comments{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/comments{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/comments{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/comments{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/comments{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/comments{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/comments{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/comments{/number}
+                                                                  issue_comment_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/issues/comments{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/issues/comments{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/issues/comments{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/issues/comments{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/issues/comments{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/issues/comments{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/issues/comments{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/issues/comments{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/issues/comments{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/issues/comments{/number}
+                                                               contents_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/contents/{+path}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/contents/{+path}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/contents/{+path}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/contents/{+path}
+5           https://api.github.com/repos/swiss-adminR/pkgs/contents/{+path}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/contents/{+path}
+7        https://api.github.com/repos/swiss-adminR/2022_12/contents/{+path}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/contents/{+path}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/contents/{+path}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/contents/{+path}
+                                                                       compare_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/compare/{base}...{head}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/compare/{base}...{head}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/compare/{base}...{head}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/compare/{base}...{head}
+5           https://api.github.com/repos/swiss-adminR/pkgs/compare/{base}...{head}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/compare/{base}...{head}
+7        https://api.github.com/repos/swiss-adminR/2022_12/compare/{base}...{head}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/compare/{base}...{head}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/compare/{base}...{head}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/compare/{base}...{head}
+                                                       merges_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/merges
+2  https://api.github.com/repos/swiss-adminR/201903_slides/merges
+3  https://api.github.com/repos/swiss-adminR/201909_slides/merges
+4  https://api.github.com/repos/swiss-adminR/202103_slides/merges
+5           https://api.github.com/repos/swiss-adminR/pkgs/merges
+6  https://api.github.com/repos/swiss-adminR/202205_slides/merges
+7        https://api.github.com/repos/swiss-adminR/2022_12/merges
+8  https://api.github.com/repos/swiss-adminR/202212_slides/merges
+9  https://api.github.com/repos/swiss-adminR/202305_slides/merges
+10 https://api.github.com/repos/swiss-adminR/202311_slides/merges
+                                                                      archive_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/{archive_format}{/ref}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/{archive_format}{/ref}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/{archive_format}{/ref}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/{archive_format}{/ref}
+5           https://api.github.com/repos/swiss-adminR/pkgs/{archive_format}{/ref}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/{archive_format}{/ref}
+7        https://api.github.com/repos/swiss-adminR/2022_12/{archive_format}{/ref}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/{archive_format}{/ref}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/{archive_format}{/ref}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/{archive_format}{/ref}
+                                                       downloads_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/downloads
+2  https://api.github.com/repos/swiss-adminR/201903_slides/downloads
+3  https://api.github.com/repos/swiss-adminR/201909_slides/downloads
+4  https://api.github.com/repos/swiss-adminR/202103_slides/downloads
+5           https://api.github.com/repos/swiss-adminR/pkgs/downloads
+6  https://api.github.com/repos/swiss-adminR/202205_slides/downloads
+7        https://api.github.com/repos/swiss-adminR/2022_12/downloads
+8  https://api.github.com/repos/swiss-adminR/202212_slides/downloads
+9  https://api.github.com/repos/swiss-adminR/202305_slides/downloads
+10 https://api.github.com/repos/swiss-adminR/202311_slides/downloads
+                                                                issues_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/issues{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/issues{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/issues{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/issues{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/issues{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/issues{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/issues{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/issues{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/issues{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/issues{/number}
+                                                                pulls_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/pulls{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/pulls{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/pulls{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/pulls{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/pulls{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/pulls{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/pulls{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/pulls{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/pulls{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/pulls{/number}
+                                                                milestones_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/milestones{/number}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/milestones{/number}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/milestones{/number}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/milestones{/number}
+5           https://api.github.com/repos/swiss-adminR/pkgs/milestones{/number}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/milestones{/number}
+7        https://api.github.com/repos/swiss-adminR/2022_12/milestones{/number}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/milestones{/number}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/milestones{/number}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/milestones{/number}
+                                                                                 notifications_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/notifications{?since,all,participating}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/notifications{?since,all,participating}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/notifications{?since,all,participating}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/notifications{?since,all,participating}
+5           https://api.github.com/repos/swiss-adminR/pkgs/notifications{?since,all,participating}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/notifications{?since,all,participating}
+7        https://api.github.com/repos/swiss-adminR/2022_12/notifications{?since,all,participating}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/notifications{?since,all,participating}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/notifications{?since,all,participating}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/notifications{?since,all,participating}
+                                                              labels_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/labels{/name}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/labels{/name}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/labels{/name}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/labels{/name}
+5           https://api.github.com/repos/swiss-adminR/pkgs/labels{/name}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/labels{/name}
+7        https://api.github.com/repos/swiss-adminR/2022_12/labels{/name}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/labels{/name}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/labels{/name}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/labels{/name}
+                                                            releases_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/releases{/id}
+2  https://api.github.com/repos/swiss-adminR/201903_slides/releases{/id}
+3  https://api.github.com/repos/swiss-adminR/201909_slides/releases{/id}
+4  https://api.github.com/repos/swiss-adminR/202103_slides/releases{/id}
+5           https://api.github.com/repos/swiss-adminR/pkgs/releases{/id}
+6  https://api.github.com/repos/swiss-adminR/202205_slides/releases{/id}
+7        https://api.github.com/repos/swiss-adminR/2022_12/releases{/id}
+8  https://api.github.com/repos/swiss-adminR/202212_slides/releases{/id}
+9  https://api.github.com/repos/swiss-adminR/202305_slides/releases{/id}
+10 https://api.github.com/repos/swiss-adminR/202311_slides/releases{/id}
+                                                       deployments_url
+1  https://api.github.com/repos/swiss-adminR/201809_slides/deployments
+2  https://api.github.com/repos/swiss-adminR/201903_slides/deployments
+3  https://api.github.com/repos/swiss-adminR/201909_slides/deployments
+4  https://api.github.com/repos/swiss-adminR/202103_slides/deployments
+5           https://api.github.com/repos/swiss-adminR/pkgs/deployments
+6  https://api.github.com/repos/swiss-adminR/202205_slides/deployments
+7        https://api.github.com/repos/swiss-adminR/2022_12/deployments
+8  https://api.github.com/repos/swiss-adminR/202212_slides/deployments
+9  https://api.github.com/repos/swiss-adminR/202305_slides/deployments
+10 https://api.github.com/repos/swiss-adminR/202311_slides/deployments
+             created_at           updated_at            pushed_at
+1  2018-09-21T06:03:51Z 2022-02-03T11:01:52Z 2018-09-25T08:13:33Z
+2  2019-03-15T10:00:46Z 2021-09-29T09:28:40Z 2019-03-28T15:18:39Z
+3  2019-09-20T06:10:45Z 2019-10-15T07:03:30Z 2019-09-20T16:53:16Z
+4  2021-03-27T15:02:18Z 2022-02-03T11:02:08Z 2021-04-16T15:03:37Z
+5  2021-07-20T14:11:39Z 2023-09-27T13:34:31Z 2022-10-25T07:47:37Z
+6  2022-06-02T06:35:53Z 2022-06-02T19:24:08Z 2022-06-02T19:23:03Z
+7  2022-12-09T09:34:03Z 2022-12-09T13:18:08Z 2022-12-09T13:26:55Z
+8  2022-12-29T18:26:35Z 2023-01-03T19:04:07Z 2023-01-03T19:37:00Z
+9  2023-05-26T07:48:44Z 2023-05-26T07:48:44Z 2023-05-30T06:23:24Z
+10 2023-12-15T08:58:59Z 2023-12-15T08:58:59Z 2023-12-15T13:31:05Z
+                                           git_url
+1  git://github.com/swiss-adminR/201809_slides.git
+2  git://github.com/swiss-adminR/201903_slides.git
+3  git://github.com/swiss-adminR/201909_slides.git
+4  git://github.com/swiss-adminR/202103_slides.git
+5           git://github.com/swiss-adminR/pkgs.git
+6  git://github.com/swiss-adminR/202205_slides.git
+7        git://github.com/swiss-adminR/2022_12.git
+8  git://github.com/swiss-adminR/202212_slides.git
+9  git://github.com/swiss-adminR/202305_slides.git
+10 git://github.com/swiss-adminR/202311_slides.git
+                                         ssh_url
+1  git@github.com:swiss-adminR/201809_slides.git
+2  git@github.com:swiss-adminR/201903_slides.git
+3  git@github.com:swiss-adminR/201909_slides.git
+4  git@github.com:swiss-adminR/202103_slides.git
+5           git@github.com:swiss-adminR/pkgs.git
+6  git@github.com:swiss-adminR/202205_slides.git
+7        git@github.com:swiss-adminR/2022_12.git
+8  git@github.com:swiss-adminR/202212_slides.git
+9  git@github.com:swiss-adminR/202305_slides.git
+10 git@github.com:swiss-adminR/202311_slides.git
+                                           clone_url
+1  https://github.com/swiss-adminR/201809_slides.git
+2  https://github.com/swiss-adminR/201903_slides.git
+3  https://github.com/swiss-adminR/201909_slides.git
+4  https://github.com/swiss-adminR/202103_slides.git
+5           https://github.com/swiss-adminR/pkgs.git
+6  https://github.com/swiss-adminR/202205_slides.git
+7        https://github.com/swiss-adminR/2022_12.git
+8  https://github.com/swiss-adminR/202212_slides.git
+9  https://github.com/swiss-adminR/202305_slides.git
+10 https://github.com/swiss-adminR/202311_slides.git
+                                         svn_url
+1  https://github.com/swiss-adminR/201809_slides
+2  https://github.com/swiss-adminR/201903_slides
+3  https://github.com/swiss-adminR/201909_slides
+4  https://github.com/swiss-adminR/202103_slides
+5           https://github.com/swiss-adminR/pkgs
+6  https://github.com/swiss-adminR/202205_slides
+7        https://github.com/swiss-adminR/2022_12
+8  https://github.com/swiss-adminR/202212_slides
+9  https://github.com/swiss-adminR/202305_slides
+10 https://github.com/swiss-adminR/202311_slides
+                                          homepage   size stargazers_count
+1                                                    2367                6
+2                                             NULL   4642                1
+3                                             NULL   1957                3
+4                                             NULL   2625                1
+5             https://swiss-adminr.github.io/pkgs/     76                9
+6  https://www.meetup.com/adminR/events/285121068/   3176                0
+7                                             NULL   8935                0
+8                                             NULL 300497                1
+9                                             NULL   3183                0
+10                                            NULL   2136                0
+   watchers_count language has_issues has_projects has_downloads has_wiki
+1               6     NULL       TRUE         TRUE          TRUE     TRUE
+2               1     NULL       TRUE         TRUE          TRUE     TRUE
+3               3     NULL       TRUE         TRUE          TRUE     TRUE
+4               1     NULL       TRUE         TRUE          TRUE     TRUE
+5               9     NULL       TRUE         TRUE          TRUE     TRUE
+6               0     NULL       TRUE         TRUE          TRUE     TRUE
+7               0        R       TRUE         TRUE          TRUE     TRUE
+8               1        R       TRUE         TRUE          TRUE     TRUE
+9               0     NULL       TRUE         TRUE          TRUE     TRUE
+10              0     NULL       TRUE         TRUE          TRUE     TRUE
+   has_pages has_discussions forks_count archived disabled open_issues_count
+1      FALSE           FALSE           1    FALSE    FALSE                 0
+2      FALSE           FALSE           0    FALSE    FALSE                 0
+3      FALSE           FALSE           0    FALSE    FALSE                 0
+4      FALSE           FALSE           0    FALSE    FALSE                 0
+5       TRUE           FALSE           3    FALSE    FALSE                 2
+6      FALSE           FALSE           0    FALSE    FALSE                 0
+7      FALSE           FALSE           0    FALSE    FALSE                 0
+8      FALSE           FALSE           0    FALSE    FALSE                 0
+9      FALSE           FALSE           0    FALSE    FALSE                 0
+10     FALSE           FALSE           0    FALSE    FALSE                 0
+   allow_forking is_template web_commit_signoff_required topics visibility
+1           TRUE       FALSE                       FALSE   NULL     public
+2           TRUE       FALSE                       FALSE   NULL     public
+3           TRUE       FALSE                       FALSE   NULL     public
+4           TRUE       FALSE                       FALSE   NULL     public
+5           TRUE       FALSE                       FALSE   NULL     public
+6           TRUE       FALSE                       FALSE   NULL     public
+7           TRUE       FALSE                       FALSE   NULL     public
+8           TRUE       FALSE                       FALSE   NULL     public
+9           TRUE       FALSE                       FALSE   NULL     public
+10          TRUE       FALSE                       FALSE   NULL     public
+   forks open_issues watchers default_branch permissions.admin
+1      1           0        6         master             FALSE
+2      0           0        1         master             FALSE
+3      0           0        3         master             FALSE
+4      0           0        1           main             FALSE
+5      3           2        9           main             FALSE
+6      0           0        0           main             FALSE
+7      0           0        0           main             FALSE
+8      0           0        1           main             FALSE
+9      0           0        0           main             FALSE
+10     0           0        0           main             FALSE
+   permissions.maintain permissions.push permissions.triage permissions.pull
+1                 FALSE            FALSE              FALSE             TRUE
+2                 FALSE            FALSE              FALSE             TRUE
+3                 FALSE            FALSE              FALSE             TRUE
+4                 FALSE            FALSE              FALSE             TRUE
+5                 FALSE            FALSE              FALSE             TRUE
+6                 FALSE            FALSE              FALSE             TRUE
+7                 FALSE            FALSE              FALSE             TRUE
+8                 FALSE            FALSE              FALSE             TRUE
+9                 FALSE            FALSE              FALSE             TRUE
+10                FALSE            FALSE              FALSE             TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="do">## How many repos?</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">nrow</span>(json_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
 </div>
 </div>
-<p>Note: always the possibility to examine the expected url in a webbrowser. This can be helpful for troubleshooting.</p>
+<p>Added after comments from Kirill Müller, that there is a package {tibblify}</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 80
+       id node_id name  full_name private owner$login html_url description fork 
+    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;lgl&gt;   &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;       &lt;lgl&gt;
+ 1 1.50e8 MDEwOl… 2018… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+ 2 1.76e8 MDEwOl… 2019… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+ 3 2.10e8 MDEwOl… 2019… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+ 4 3.52e8 MDEwOl… 2021… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+ 5 3.88e8 MDEwOl… pkgs  swiss-ad… FALSE   swiss-admi… https:/… A curated … FALSE
+ 6 4.99e8 R_kgDO… 2022… swiss-ad… FALSE   swiss-admi… https:/… slides of … FALSE
+ 7 5.76e8 R_kgDO… 2022… swiss-ad… FALSE   swiss-admi… https:/… &lt;NA&gt;        FALSE
+ 8 5.83e8 R_kgDO… 2022… swiss-ad… FALSE   swiss-admi… https:/… &lt;NA&gt;        FALSE
+ 9 6.46e8 R_kgDO… 2023… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+10 7.32e8 R_kgDO… 2023… swiss-ad… FALSE   swiss-admi… https:/… Slides of … FALSE
+# ℹ 88 more variables: owner$id &lt;int&gt;, $node_id &lt;chr&gt;, $avatar_url &lt;chr&gt;,
+#   $gravatar_id &lt;chr&gt;, $url &lt;chr&gt;, $html_url &lt;chr&gt;, $followers_url &lt;chr&gt;,
+#   $following_url &lt;chr&gt;, $gists_url &lt;chr&gt;, $starred_url &lt;chr&gt;,
+#   $subscriptions_url &lt;chr&gt;, $organizations_url &lt;chr&gt;, $repos_url &lt;chr&gt;,
+#   $events_url &lt;chr&gt;, $received_events_url &lt;chr&gt;, $type &lt;chr&gt;,
+#   $site_admin &lt;lgl&gt;, url &lt;chr&gt;, forks_url &lt;chr&gt;, keys_url &lt;chr&gt;,
+#   collaborators_url &lt;chr&gt;, teams_url &lt;chr&gt;, hooks_url &lt;chr&gt;, …</code></pre>
+</div>
+</div>
 </section></section>
 <section>
 <section id="cytoscape" class="title-slide slide level1 center">
 <h1>Cytoscape</h1>
-<p>Create and manipulate a basic network in Cytoscape using RCy3.</p>
+<p>Create and manipulate a basic network in Cytoscape using {RCy3}.</p>
 <p>Cytoscape has been popular for exploring biological, social and other kinds of networks. The software is very intuitive and helpful for data exploration and visualization, and also provides opportunities for automation.</p>
-<p>We can test out using functions in a package that wrap the REST API, but we can also use cURL. In the Cytoscape example this can be useful if you are wanting to automate a plugin that does not have functions in the R package, but still exposes a REST API.</p>
+<p>In this example we will test out using functions in a package that wraps the REST API, but we can also use cURL or other approaches. In this Cytoscape example this can be useful if you are wanting to automate a plugin that does not have functions in the R package, but still exposes a REST API.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">library</span>(RCy3)</span>
-<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">cytoscapePing</span>()</span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">cytoscapeVersionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">library</span>(RCy3)</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">cytoscapePing</span>()</span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="fu">cytoscapeVersionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      apiVersion cytoscapeVersion 
             "v1"         "3.10.1" </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="do">## alternative ways with curl:</span></span>
-<span id="cb19-2"><a href="#cb19-2"></a>req <span class="ot">&lt;-</span> curl<span class="sc">::</span><span class="fu">curl</span>(<span class="at">url =</span> <span class="st">"http://localhost:1234/v1/version"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3"></a>jsonlite<span class="sc">::</span><span class="fu">prettify</span>(<span class="fu">readLines</span>(req))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="do">## alternative ways with httr2:</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>cytoscape_version_req <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"http://localhost:1234/v1/version"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
+<span id="cb24-4"><a href="#cb24-4"></a></span>
+<span id="cb24-5"><a href="#cb24-5"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(cytoscape_version_req)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{
-    "apiVersion": "v1",
-    "cytoscapeVersion": "3.10.1"
-}
- </code></pre>
+<pre><code>$apiVersion
+[1] "v1"
+
+$cytoscapeVersion
+[1] "3.10.1"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="do">## Curl installed on my system</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="fu">system</span>(<span class="st">"curl http://localhost:1234/v1/version"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="do">## Curl installed on my system</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">system</span>(<span class="st">"curl http://localhost:1234/v1/version"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>curl is a versatile command-line tool for making HTTP requests, and it can be used for various types of requests, not just GET. By default, when you use curl without specifying a request method, it performs a GET request. You can also specify POST or PUT verbs.</p>
+<p>As an aside, curl is a versatile command-line tool for making HTTP requests, and it can be used for various types of requests, not just GET. By default, when you use curl without specifying a request method, it performs a GET request. You can also specify POST or PUT verbs.</p>
 </section>
 <section id="simple-network-example" class="slide level2">
 <h2>Simple network example</h2>
+<p>Imagine a bicycle club, a close-knit community bonded by a love for cycling. In this simple social network, individuals are nodes, and their relationships are captured by edges.</p>
+<p>Each person is associated with attributes: ‘group’ signifies their location, ‘score’ tracks outing attendance.</p>
+<p>The edges represent the personal connections and the weight reveals the number of times members collaborated in organizing post-ride refreshments.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>nodes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">c</span>(<span class="st">"node 0"</span>, <span class="st">"node 1"</span>, <span class="st">"node 2"</span>, <span class="st">"node 3"</span>, <span class="st">"node 4"</span>, <span class="st">"node 5"</span>, <span class="st">"node 6"</span>),</span>
-<span id="cb22-2"><a href="#cb22-2"></a>                    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>), <span class="co"># categorical strings</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a>                    <span class="at">score =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">10</span>)), <span class="co"># integers</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a>                    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-5"><a href="#cb22-5"></a>edges <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">source =</span> <span class="fu">c</span>(<span class="st">"node 0"</span>, <span class="st">"node 0"</span>, <span class="st">"node 0"</span>, <span class="st">"node 2"</span>, <span class="st">"node 2"</span>, <span class="st">"node 5"</span>, <span class="st">"node 4"</span>, <span class="st">"node 5"</span>, <span class="st">"node 1"</span>),</span>
-<span id="cb22-6"><a href="#cb22-6"></a>                    <span class="at">target =</span> <span class="fu">c</span>(<span class="st">"node 1"</span>, <span class="st">"node 2"</span>, <span class="st">"node 3"</span>, <span class="st">"node 3"</span>, <span class="st">"node 4"</span>, <span class="st">"node 6"</span>, <span class="st">"node 6"</span>, <span class="st">"node 1"</span>, <span class="st">"node 3"</span>),</span>
-<span id="cb22-7"><a href="#cb22-7"></a>                    <span class="at">weight =</span> <span class="fu">c</span>(<span class="fl">5.1</span>, <span class="fl">3.0</span>, <span class="fl">5.2</span>, <span class="fl">9.9</span>, <span class="fl">3.5</span>, <span class="fl">4.5</span>, <span class="dv">6</span>, <span class="fl">5.3</span>, <span class="dv">3</span>), <span class="co"># numeric</span></span>
-<span id="cb22-8"><a href="#cb22-8"></a>                    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb22-9"><a href="#cb22-9"></a></span>
-<span id="cb22-10"><a href="#cb22-10"></a>simple_graph_ig <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">graph_from_data_frame</span>(edges, <span class="at">vertices =</span> nodes)</span>
-<span id="cb22-11"><a href="#cb22-11"></a><span class="fu">plot</span>(simple_graph_ig)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>nodes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">c</span>(<span class="st">"node 0"</span>, <span class="st">"node 1"</span>, <span class="st">"node 2"</span>, <span class="st">"node 3"</span>, <span class="st">"node 4"</span>, <span class="st">"node 5"</span>, <span class="st">"node 6"</span>),</span>
+<span id="cb27-2"><a href="#cb27-2"></a>                    <span class="at">group =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>, <span class="st">"C"</span>), <span class="co"># categorical strings</span></span>
+<span id="cb27-3"><a href="#cb27-3"></a>                    <span class="at">score =</span> <span class="fu">as.integer</span>(<span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">10</span>)), <span class="co"># integers</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a>                    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-5"><a href="#cb27-5"></a>edges <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">source =</span> <span class="fu">c</span>(<span class="st">"node 0"</span>, <span class="st">"node 0"</span>, <span class="st">"node 0"</span>, <span class="st">"node 2"</span>, <span class="st">"node 2"</span>, <span class="st">"node 5"</span>, <span class="st">"node 4"</span>, <span class="st">"node 5"</span>, <span class="st">"node 1"</span>),</span>
+<span id="cb27-6"><a href="#cb27-6"></a>                    <span class="at">target =</span> <span class="fu">c</span>(<span class="st">"node 1"</span>, <span class="st">"node 2"</span>, <span class="st">"node 3"</span>, <span class="st">"node 3"</span>, <span class="st">"node 4"</span>, <span class="st">"node 6"</span>, <span class="st">"node 6"</span>, <span class="st">"node 1"</span>, <span class="st">"node 3"</span>),</span>
+<span id="cb27-7"><a href="#cb27-7"></a>                    <span class="at">weight =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">3</span>), <span class="co"># integers</span></span>
+<span id="cb27-8"><a href="#cb27-8"></a>                    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-9"><a href="#cb27-9"></a></span>
+<span id="cb27-10"><a href="#cb27-10"></a>simple_graph_ig <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">graph_from_data_frame</span>(edges, <span class="at">vertices =</span> nodes)</span>
+<span id="cb27-11"><a href="#cb27-11"></a><span class="fu">plot</span>(simple_graph_ig)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">createNetworkFromDataFrames</span>(nodes, edges,</span>
-<span id="cb23-2"><a href="#cb23-2"></a>                            <span class="at">title =</span> <span class="st">"my first network"</span>,</span>
-<span id="cb23-3"><a href="#cb23-3"></a>                            <span class="at">collection =</span> <span class="st">"DataFrame Example"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">createNetworkFromDataFrames</span>(nodes, </span>
+<span id="cb28-2"><a href="#cb28-2"></a>                            edges,</span>
+<span id="cb28-3"><a href="#cb28-3"></a>                            <span class="at">title =</span> <span class="st">"A bicycle club network"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>networkSUID 
-        447 </code></pre>
+        128 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="fu">layoutNetwork</span>(<span class="st">"circular"</span>)</span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="fu">layoutNetwork</span>(<span class="st">"cose"</span>)</span>
-<span id="cb25-3"><a href="#cb25-3"></a><span class="fu">setNodeShapeDefault</span>(<span class="st">"OCTAGON"</span>)</span>
-<span id="cb25-4"><a href="#cb25-4"></a><span class="fu">setVisualStyle</span>(<span class="st">"Marquee"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="fu">layoutNetwork</span>(<span class="st">"circular"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="fu">layoutNetwork</span>(<span class="st">"cose"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="fu">setNodeShapeDefault</span>(<span class="st">"OCTAGON"</span>)</span>
+<span id="cb30-4"><a href="#cb30-4"></a><span class="fu">setVisualStyle</span>(<span class="st">"Marquee"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                message 
 "Visual Style applied." </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="fu">setVisualStyle</span>(<span class="st">"default"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">setVisualStyle</span>(<span class="st">"default"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                message 
 "Visual Style applied." </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="fu">setNodeColorDefault</span>(<span class="st">"#AAFF88"</span>)</span>
-<span id="cb29-2"><a href="#cb29-2"></a><span class="fu">setNodeSizeDefault</span>(<span class="dv">60</span>)</span>
-<span id="cb29-3"><a href="#cb29-3"></a><span class="fu">setNodeFontSizeDefault</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu">setNodeColorDefault</span>(<span class="st">"#AAFF88"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="fu">setNodeSizeDefault</span>(<span class="dv">60</span>)</span>
+<span id="cb34-3"><a href="#cb34-3"></a><span class="fu">setNodeFontSizeDefault</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<img data-src="r_code_walkthroughs_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p>In the context of Cytoscape, “mapping” typically refers to associating data attributes with visual properties of the network elements (e.g., nodes or edges). This process allows you to visually represent and analyze patterns or relationships present in your data.</p>
+<img data-src="r_code_walkthroughs_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><p>In the context of Cytoscape, “mapping” typically refers to associating data attributes with visual properties of the network elements (e.g., nodes or edges). This process allows you to visually represent and analyze patterns or relationships present in your data.</p>
 <p>You can do this with data included with the nodes or edges are by associating another dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>style_name <span class="ot">&lt;-</span>  <span class="st">"myStyle"</span></span>
-<span id="cb30-2"><a href="#cb30-2"></a>defaults <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">NODE_SHAPE =</span> <span class="st">"diamond"</span>,</span>
-<span id="cb30-3"><a href="#cb30-3"></a>                 <span class="at">NODE_SIZE =</span> <span class="dv">30</span>,</span>
-<span id="cb30-4"><a href="#cb30-4"></a>                 <span class="at">EDGE_TRANSPARENCY =</span> <span class="dv">120</span>)</span>
-<span id="cb30-5"><a href="#cb30-5"></a>edge_width <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"edge width"</span>,</span>
-<span id="cb30-6"><a href="#cb30-6"></a>                                <span class="st">"weight"</span>,</span>
-<span id="cb30-7"><a href="#cb30-7"></a>                                <span class="st">"p"</span>) <span class="do">## p for passthrough</span></span>
-<span id="cb30-8"><a href="#cb30-8"></a></span>
-<span id="cb30-9"><a href="#cb30-9"></a><span class="do">## The term "passthrough" implies that the values of these visual properties </span></span>
-<span id="cb30-10"><a href="#cb30-10"></a><span class="do">## are passed through from the associated data columns without any transformation</span></span>
-<span id="cb30-11"><a href="#cb30-11"></a></span>
-<span id="cb30-12"><a href="#cb30-12"></a>node_fill <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"node fill color"</span>,</span>
-<span id="cb30-13"><a href="#cb30-13"></a>                               <span class="st">"score"</span>,</span>
-<span id="cb30-14"><a href="#cb30-14"></a>                               <span class="st">"c"</span>,</span>
-<span id="cb30-15"><a href="#cb30-15"></a>                               <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
-<span id="cb30-16"><a href="#cb30-16"></a>                               <span class="fu">c</span>(<span class="st">"#99CCFF"</span>, <span class="st">"#FFFFFF"</span>, <span class="st">"#FF7777"</span>))</span>
-<span id="cb30-17"><a href="#cb30-17"></a>node_label <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"node label"</span>, <span class="st">"group"</span>, <span class="st">"p"</span>)</span>
-<span id="cb30-18"><a href="#cb30-18"></a></span>
-<span id="cb30-19"><a href="#cb30-19"></a><span class="fu">createVisualStyle</span>(style_name, defaults, <span class="fu">list</span>(edge_width, node_fill, node_label))</span>
-<span id="cb30-20"><a href="#cb30-20"></a><span class="fu">setVisualStyle</span>(style_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>style_name <span class="ot">&lt;-</span>  <span class="st">"myStyle"</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a>defaults <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">NODE_SHAPE =</span> <span class="st">"diamond"</span>,</span>
+<span id="cb35-3"><a href="#cb35-3"></a>                 <span class="at">NODE_SIZE =</span> <span class="dv">30</span>,</span>
+<span id="cb35-4"><a href="#cb35-4"></a>                 <span class="at">EDGE_TRANSPARENCY =</span> <span class="dv">120</span>)</span>
+<span id="cb35-5"><a href="#cb35-5"></a>edge_width <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"edge width"</span>,</span>
+<span id="cb35-6"><a href="#cb35-6"></a>                                <span class="st">"weight"</span>,</span>
+<span id="cb35-7"><a href="#cb35-7"></a>                                <span class="st">"p"</span>) <span class="do">## p for passthrough</span></span>
+<span id="cb35-8"><a href="#cb35-8"></a></span>
+<span id="cb35-9"><a href="#cb35-9"></a><span class="do">## The term "passthrough" implies that the values of these visual properties </span></span>
+<span id="cb35-10"><a href="#cb35-10"></a><span class="do">## are passed through from the associated data columns without any transformation</span></span>
+<span id="cb35-11"><a href="#cb35-11"></a></span>
+<span id="cb35-12"><a href="#cb35-12"></a>node_fill <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"node fill color"</span>,</span>
+<span id="cb35-13"><a href="#cb35-13"></a>                               <span class="st">"score"</span>,</span>
+<span id="cb35-14"><a href="#cb35-14"></a>                               <span class="st">"c"</span>,</span>
+<span id="cb35-15"><a href="#cb35-15"></a>                               <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>),</span>
+<span id="cb35-16"><a href="#cb35-16"></a>                               <span class="fu">c</span>(<span class="st">"#99CCFF"</span>, <span class="st">"#FFFFFF"</span>, <span class="st">"#FF7777"</span>))</span>
+<span id="cb35-17"><a href="#cb35-17"></a>node_label <span class="ot">&lt;-</span> <span class="fu">mapVisualProperty</span>(<span class="st">"node label"</span>, <span class="st">"group"</span>, <span class="st">"p"</span>)</span>
+<span id="cb35-18"><a href="#cb35-18"></a></span>
+<span id="cb35-19"><a href="#cb35-19"></a><span class="fu">createVisualStyle</span>(style_name, defaults, <span class="fu">list</span>(edge_width, node_fill, node_label))</span>
+<span id="cb35-20"><a href="#cb35-20"></a><span class="fu">setVisualStyle</span>(style_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                message 
 "Visual Style applied." </code></pre>
@@ -1668,14 +5578,14 @@ $name
 <h2>Cytoscape API documentation</h2>
 <p>There is quite a bit of documentation available. This Swagger documentation is available for many APIs.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="fu">cyrestAPI</span>()  <span class="co"># CyREST API</span></span>
-<span id="cb32-2"><a href="#cb32-2"></a><span class="fu">commandsAPI</span>()  <span class="co"># Commands API</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">cyrestAPI</span>()  <span class="co"># CyREST API</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="fu">commandsAPI</span>()  <span class="co"># Commands API</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section>
 <section>
 <section id="deepl-api" class="title-slide slide level1 center">
 <h1>DeepL API</h1>
-<p>There are many different tools for doing translations.</p>
+<p>There are many different tools for doing translations. Deepl API is a possibility. This example is using the free version and requires a “DeepL-Auth-Key” which can be obtained when you sign up.</p>
 <p>This has been based on prototyping we were doing where we needed some translations https://www.deepl.com/en/docs-api/</p>
 <p>From the documentation, We get an example command for curl. How can we use that in R?</p>
 <pre><code>curl https://api-free.deepl.com/v2/translate -X POST  --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=Hello, world!' --data-urlencode 'target_lang=DE'</code></pre>
@@ -1683,18 +5593,18 @@ $name
 <ul>
 <li>Use the curl command with {curl} or {crul}</li>
 <li>Adapt to use with {httr2} (or older {httr})</li>
-<li>Also could use system2() to run cURL command in system shell</li>
+<li>Also could use <code>system()</code> to run cURL command in system shell</li>
 </ul>
 <p>Here we will look at using the curl command with {httr2}</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>httr2<span class="sc">::</span><span class="fu">curl_translate</span>(<span class="st">"curl http://example.com"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>httr2<span class="sc">::</span><span class="fu">curl_translate</span>(<span class="st">"curl http://example.com"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>request("http://example.com") |&gt; 
   req_perform()</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="do">## Just a way to get you started, but not all the way there</span></span>
-<span id="cb36-2"><a href="#cb36-2"></a>httr2<span class="sc">::</span><span class="fu">curl_translate</span>(<span class="st">"curl 'https://api-free.deepl.com/v2/translate' -X POST --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=The raccoon is sleeping in the tree. target_lang=DE' "</span>,</span>
-<span id="cb36-3"><a href="#cb36-3"></a>                      <span class="at">simplify_headers =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="do">## Just a way to get you started, but not all the way there</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a>httr2<span class="sc">::</span><span class="fu">curl_translate</span>(<span class="st">"curl 'https://api-free.deepl.com/v2/translate' -X POST --header 'Authorization: DeepL-Auth-Key myauthkey' --data-urlencode 'text=The raccoon is sleeping in the tree. target_lang=DE' "</span>,</span>
+<span id="cb41-3"><a href="#cb41-3"></a>                      <span class="at">simplify_headers =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>request("https://api-free.deepl.com/v2/translate") |&gt; 
   req_method("POST") |&gt; 
@@ -1704,27 +5614,27 @@ $name
   req_perform()</code></pre>
 </div>
 </div>
-<p>We can use that output to get started, but will add our needed query info</p>
+<p>We can use that output to get started, but will add our needed query info after.</p>
 </section>
 <section id="constructing-the-request" class="slide level2">
 <h2>Constructing the request</h2>
-<p>Can use <code>httr2::req_dry_run()</code> instead of <code>httr2::req_perform()</code> to test out the request (did not include the example as this prints the Authorization to the screen and doc).</p>
+<p>We can also use <code>httr2::req_dry_run()</code> instead of <code>httr2::req_perform()</code> to test out the request (did not include the example as this prints the Authorization to the screen and doc).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>response <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api-free.deepl.com/v2/translate"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb38-2"><a href="#cb38-2"></a>  httr2<span class="sc">::</span><span class="fu">req_method</span>(<span class="st">"POST"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb38-3"><a href="#cb38-3"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(<span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"DeepL-Auth-Key "</span>,</span>
-<span id="cb38-4"><a href="#cb38-4"></a>                                            <span class="fu">Sys.getenv</span>(<span class="st">"DEEPL_AUTH"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb38-5"><a href="#cb38-5"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">text =</span> <span class="st">"The raccoon is sleeping in the tree."</span>) <span class="sc">|&gt;</span></span>
-<span id="cb38-6"><a href="#cb38-6"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">target_lang =</span> <span class="st">"DE"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb38-7"><a href="#cb38-7"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
-<span id="cb38-8"><a href="#cb38-8"></a></span>
-<span id="cb38-9"><a href="#cb38-9"></a><span class="co"># Check the response status</span></span>
-<span id="cb38-10"><a href="#cb38-10"></a>httr2<span class="sc">::</span><span class="fu">resp_status</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>response <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api-free.deepl.com/v2/translate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2"></a>  httr2<span class="sc">::</span><span class="fu">req_method</span>(<span class="st">"POST"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(<span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"DeepL-Auth-Key "</span>,</span>
+<span id="cb43-4"><a href="#cb43-4"></a>                                            <span class="fu">Sys.getenv</span>(<span class="st">"DEEPL_AUTH"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb43-5"><a href="#cb43-5"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">text =</span> <span class="st">"The raccoon is sleeping in the tree."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-6"><a href="#cb43-6"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">target_lang =</span> <span class="st">"DE"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb43-7"><a href="#cb43-7"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
+<span id="cb43-8"><a href="#cb43-8"></a></span>
+<span id="cb43-9"><a href="#cb43-9"></a><span class="co"># Check the response status</span></span>
+<span id="cb43-10"><a href="#cb43-10"></a>httr2<span class="sc">::</span><span class="fu">resp_status</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 200</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="co"># Parse the content</span></span>
-<span id="cb40-2"><a href="#cb40-2"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a><span class="co"># Parse the content</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a>httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$translations
 $translations[[1]]
@@ -1734,8 +5644,8 @@ $translations[[1]]$detected_source_language
 $translations[[1]]$text
 [1] "Der Waschbär schläft auf dem Baum."</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a>httr2<span class="sc">::</span><span class="fu">resp_header</span>(response,</span>
-<span id="cb42-2"><a href="#cb42-2"></a>                   <span class="st">"content-type"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>httr2<span class="sc">::</span><span class="fu">resp_header</span>(response,</span>
+<span id="cb47-2"><a href="#cb47-2"></a>                   <span class="st">"content-type"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "application/json"</code></pre>
 </div>
@@ -1744,9 +5654,9 @@ $translations[[1]]$text
 <section id="reponse-of-translated-text" class="slide level2">
 <h2>Reponse of translated text</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a><span class="co"># Extract and display the translated text</span></span>
-<span id="cb44-2"><a href="#cb44-2"></a>translated_text <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)<span class="sc">$</span>translations[[<span class="dv">1</span>]]<span class="sc">$</span>text</span>
-<span id="cb44-3"><a href="#cb44-3"></a>translated_text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a><span class="co"># Extract and display the translated text</span></span>
+<span id="cb49-2"><a href="#cb49-2"></a>translated_text <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response)<span class="sc">$</span>translations[[<span class="dv">1</span>]]<span class="sc">$</span>text</span>
+<span id="cb49-3"><a href="#cb49-3"></a>translated_text</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Der Waschbär schläft auf dem Baum."</code></pre>
 </div>
@@ -1756,33 +5666,33 @@ $translations[[1]]$text
 <h2>Do language detection</h2>
 <p>We can take a very similar approach, and add in that the language is detected during the translation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a><span class="co"># Modify the request to include language detection</span></span>
-<span id="cb46-2"><a href="#cb46-2"></a><span class="co"># Language detection request</span></span>
-<span id="cb46-3"><a href="#cb46-3"></a>response_lang_detection <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api-free.deepl.com/v2/translate"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a>  httr2<span class="sc">::</span><span class="fu">req_method</span>(<span class="st">"POST"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb46-5"><a href="#cb46-5"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(</span>
-<span id="cb46-6"><a href="#cb46-6"></a>    <span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"DeepL-Auth-Key "</span>,</span>
-<span id="cb46-7"><a href="#cb46-7"></a>                           <span class="fu">Sys.getenv</span>(<span class="st">"DEEPL_AUTH"</span>))</span>
-<span id="cb46-8"><a href="#cb46-8"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb46-9"><a href="#cb46-9"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">text =</span> <span class="st">"The raccoon is sleeping in the tree."</span>) <span class="sc">|&gt;</span></span>
-<span id="cb46-10"><a href="#cb46-10"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">source_lang_auto =</span> <span class="st">"1"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb46-11"><a href="#cb46-11"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">target_lang =</span> <span class="st">"DE"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb46-12"><a href="#cb46-12"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
-<span id="cb46-13"><a href="#cb46-13"></a></span>
-<span id="cb46-14"><a href="#cb46-14"></a><span class="co"># Check the response status</span></span>
-<span id="cb46-15"><a href="#cb46-15"></a>status_code_detection <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_status</span>(response_lang_detection)</span>
-<span id="cb46-16"><a href="#cb46-16"></a></span>
-<span id="cb46-17"><a href="#cb46-17"></a><span class="co"># Check for successful response or handle errors</span></span>
-<span id="cb46-18"><a href="#cb46-18"></a><span class="cf">if</span> (status_code_detection <span class="sc">==</span> <span class="dv">200</span>) {</span>
-<span id="cb46-19"><a href="#cb46-19"></a>  detected_language <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response_lang_detection)<span class="sc">$</span>translations[[<span class="dv">1</span>]]<span class="sc">$</span>detected_source_language</span>
-<span id="cb46-20"><a href="#cb46-20"></a>  <span class="fu">message</span>(<span class="st">"Detected Source Language:"</span>,</span>
-<span id="cb46-21"><a href="#cb46-21"></a>          detected_language,</span>
-<span id="cb46-22"><a href="#cb46-22"></a>          <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb46-23"><a href="#cb46-23"></a>} <span class="cf">else</span> {</span>
-<span id="cb46-24"><a href="#cb46-24"></a>  <span class="fu">message</span>(<span class="st">"Error:"</span>,</span>
-<span id="cb46-25"><a href="#cb46-25"></a>          httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response_lang_detection),</span>
-<span id="cb46-26"><a href="#cb46-26"></a>          <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb46-27"><a href="#cb46-27"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a><span class="co"># Modify the request to include language detection</span></span>
+<span id="cb51-2"><a href="#cb51-2"></a><span class="co"># Language detection request</span></span>
+<span id="cb51-3"><a href="#cb51-3"></a>response_lang_detection <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(<span class="st">"https://api-free.deepl.com/v2/translate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-4"><a href="#cb51-4"></a>  httr2<span class="sc">::</span><span class="fu">req_method</span>(<span class="st">"POST"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  httr2<span class="sc">::</span><span class="fu">req_headers</span>(</span>
+<span id="cb51-6"><a href="#cb51-6"></a>    <span class="at">Authorization =</span> <span class="fu">paste0</span>(<span class="st">"DeepL-Auth-Key "</span>,</span>
+<span id="cb51-7"><a href="#cb51-7"></a>                           <span class="fu">Sys.getenv</span>(<span class="st">"DEEPL_AUTH"</span>))</span>
+<span id="cb51-8"><a href="#cb51-8"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb51-9"><a href="#cb51-9"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">text =</span> <span class="st">"The raccoon is sleeping in the tree."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-10"><a href="#cb51-10"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">source_lang_auto =</span> <span class="st">"1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-11"><a href="#cb51-11"></a>  httr2<span class="sc">::</span><span class="fu">req_url_query</span>(<span class="at">target_lang =</span> <span class="st">"DE"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-12"><a href="#cb51-12"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>()</span>
+<span id="cb51-13"><a href="#cb51-13"></a></span>
+<span id="cb51-14"><a href="#cb51-14"></a><span class="co"># Check the response status</span></span>
+<span id="cb51-15"><a href="#cb51-15"></a>status_code_detection <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_status</span>(response_lang_detection)</span>
+<span id="cb51-16"><a href="#cb51-16"></a></span>
+<span id="cb51-17"><a href="#cb51-17"></a><span class="co"># Check for successful response or handle errors</span></span>
+<span id="cb51-18"><a href="#cb51-18"></a><span class="cf">if</span> (status_code_detection <span class="sc">==</span> <span class="dv">200</span>) {</span>
+<span id="cb51-19"><a href="#cb51-19"></a>  detected_language <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response_lang_detection)<span class="sc">$</span>translations[[<span class="dv">1</span>]]<span class="sc">$</span>detected_source_language</span>
+<span id="cb51-20"><a href="#cb51-20"></a>  <span class="fu">message</span>(<span class="st">"Detected Source Language:"</span>,</span>
+<span id="cb51-21"><a href="#cb51-21"></a>          detected_language,</span>
+<span id="cb51-22"><a href="#cb51-22"></a>          <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb51-23"><a href="#cb51-23"></a>} <span class="cf">else</span> {</span>
+<span id="cb51-24"><a href="#cb51-24"></a>  <span class="fu">message</span>(<span class="st">"Error:"</span>,</span>
+<span id="cb51-25"><a href="#cb51-25"></a>          httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(response_lang_detection),</span>
+<span id="cb51-26"><a href="#cb51-26"></a>          <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb51-27"><a href="#cb51-27"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="footer footer-default">
 
