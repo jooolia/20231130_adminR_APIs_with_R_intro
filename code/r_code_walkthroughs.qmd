@@ -1,8 +1,5 @@
 ---
 title: "APIs in R: demos"
-format:
-  revealjs: 
-    theme: dark
 editor: source
 editor_options: 
   chunk_output_type: console
